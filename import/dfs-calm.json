@@ -1,0 +1,20 @@
+{
+  "6d6f6473-6466-7320-6361-6c6d30303031": {
+    "id": "6d6f6473-6466-7320-6361-6c6d30303031",
+    "name": "DFS Calm",
+    "description": "Calmer Zen for everyone: a glass selected tab, faded unloaded tabs, one text size, tidy rows.",
+    "homepage": "https://github.com/Digital-Feng-Shui/dfs-zen-mods/tree/main/dfs-calm",
+    "style": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/readme.md",
+    "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/preferences.json",
+    "author": "Digital Feng Shui",
+    "version": "1.6.0",
+    "image": "",
+    "tags": [
+      "calm",
+      "tabs"
+    ],
+    "createdAt": "2026-11-02",
+    "updatedAt": "2026-11-02"
+  }
+}

@@ -1,0 +1,36 @@
+/* DFS Quiet, a Zen mod for keyboard people: no buttons a shortcut or gesture already covers.
+   The next level after DFS Calm. Two switches in Zen Settings > Mods. Shortcuts: back/forward = two-finger swipe
+   or Cmd [ and Cmd ], reload = Cmd R, copy URL = Cmd Shift C, history = Cmd Shift H, hide/show the sidebar =
+   Toggle Compact Mode (Cmd S by default), open the URL bar = Cmd L or Cmd T. */
+
+/* Buttons a shortcut or gesture covers go: back and forward, reload, the sidebar button, copy link, reader view and
+   the library. Back, forward and their divider come back while you customise the toolbar, so they can still be moved. */
+@media (-moz-pref("mod.dfs-quiet.hide-buttons")) {
+  :root:not([customizing]) :is(#back-button, #forward-button, #zen-sidebar-top-buttons-separator),
+  #stop-reload-button,
+  #reload-button,
+  #zen-expand-sidebar-button,
+  #sidebar-button,
+  #zen-copy-url-button,
+  #reader-mode-button,
+  #zen-library-button {
+    display: none !important;
+  }
+}
+
+/* The URL bar row stays collapsed. Cmd T and Cmd L float the bar over the page (zen-newtab, zen-floating-urlbar),
+   so the row would only be an empty slot. It opens only when the bar is used in place, which happens when
+   Zen's URL bar behaviour is set to not float. The bar stays in the tree, so focus still works. Single toolbar layout only.
+   No page open yet (Zen's empty tab, root [zen-has-empty-tab]): Zen focuses the bar in place, so the row would show;
+   it stays closed there too and only opens once you type (usertyping), so you never type into a hidden bar. */
+@media (-moz-pref("mod.dfs-quiet.hide-urlbar")) {
+  :root[zen-single-toolbar="true"] #nav-bar:not(:has(#urlbar:is([open], [focused], [breakout-extend]):not([zen-newtab], [zen-floating-urlbar]))),
+  :root[zen-single-toolbar="true"][zen-has-empty-tab="true"] #nav-bar:not(:has(#urlbar[usertyping])) {
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}

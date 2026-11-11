@@ -1,0 +1,361 @@
+/* DFS Nav Panel, a Zen mod for the Ctrl Tab panel (with "Ctrl+Tab cycles through tabs in recently used order" on).
+   Your recent tabs as big page previews in one card in the exact centre of the screen; each tab's icon sits on a white
+   tile in the preview's corner, its name centred underneath. Only Zen's own panel, restyled: no script.
+   Settings: Grid (9, 12 or 6 tabs) and a close hint ([W] Close) on the tab you rest on.
+   Spacing on a 4px grid. Corners follow Zen's page frame (7px by default) and grow 4px per layer. Notes: design.md,
+   switcher-lab.md, lab/index.html */
+
+/* The panel fills the screen and is see-through, so the card can sit in the exact centre of the page and is never
+   clipped. Firefox opens the panel at x = (screen width - W) / 2, where W is its own idea of the panel's width:
+   230pt per preview on a 1512pt screen (85% of the screen / 7, times 1.25), at most 99% of the screen. A wider
+   panel keeps that left edge, so with few tabs it grew off to the right (card 35pt right of centre with 6 tabs,
+   322pt with 1; measured 3 Nov). So the panel takes the full width and a negative left margin of exactly that x,
+   which puts it back at the screen's left edge whatever the number of tabs. Gecko places a popup by its margin box.
+   The panel's inner box is closed to mods (::part doesn't reach it, and the popup ignores alignment), so the centre
+   comes from padding and auto side margins. */
+#ctrlTab-panel {
+  --panel-background-color: transparent !important;
+  --panel-border-color: transparent !important;
+  --panel-shadow: none !important;
+  --dfsn-n: 7; /* how many previews Firefox counted (set below); from 7 on, its width is 99% of the screen */
+  --dfsn-ff-w: min(99vw, calc(round(up, 100vw * 0.85 / 7, 1px) * 1.25 * var(--dfsn-n)));
+  width: 100vw !important;
+  margin-inline: calc((var(--dfsn-ff-w) - 100vw) / 2) 0 !important;
+  height: 100vh !important;
+  font-weight: normal !important;
+  /* Vertical centre: the inner box ignores alignment, but takes its padding from --panel-padding. The card's height is
+     known (previews locked to 16:10, one or two rows), so the top padding is half of what's left, minus 17px for the space Zen
+     adds itself above the inner box (margins and border; the popup's own 8px drop is already in the panel's place).
+     Was 25px until 0.10.2, which left the card 8px high (measured 3 Nov). */
+  --dfsn-rows: 1;
+  --dfsn-item-h: calc((var(--dfsn-card-w) - 16px) / 1.6 + 44px);
+  --dfsn-card-h: calc(var(--dfsn-rows) * var(--dfsn-item-h) + (var(--dfsn-rows) - 1) * 8px + 24px);
+  --panel-padding: max(0px, calc((100vh - var(--dfsn-card-h)) / 2 - 17px)) 0 0 0 !important;
+
+  --dfsn-r-page: calc(var(--zen-native-inner-radius, 9.1px) / var(--zen-squircle-value, 1.3));
+  --dfsn-r-item: calc(var(--dfsn-r-page) + 4px);
+  --dfsn-r-card: calc(var(--dfsn-r-page) + 8px);
+  --dfsn-r-tile: var(--dfsn-r-page);
+  /* The website area: the panel covers the whole screen, but the card centres on the page beside the sidebar.
+     --dfsn-side is the sidebar's width (read below), --dfsn-gap Zen's margin on the page's other side. */
+  --dfsn-side: 0px;
+  --dfsn-gap: 0px;
+  --dfsn-dir: 1;
+  --dfsn-area-w: calc(100vw - var(--dfsn-side) - var(--dfsn-gap));
+  --dfsn-shift: calc(var(--dfsn-dir) * (var(--dfsn-side) - var(--dfsn-gap)) / 2);
+  /* Card width: the whole card stays about 1088pt wide (349pt cards in the 3-wide grid, 260pt in the 4-wide one), and
+     shrinks only when the rows would not fit the screen's height. (A "Fill the page" size was tried; Rim prefers this.) */
+  --dfsn-grid-cols: 4;
+  --dfsn-base-w: calc((1088px - 24px - (var(--dfsn-grid-cols) - 1) * 8px) / var(--dfsn-grid-cols));
+  --dfsn-card-w: min(var(--dfsn-base-w),
+    calc(((100vh - 72px - (var(--dfsn-rows) - 1) * 8px) / var(--dfsn-rows) - 44px) * 1.6 + 16px));
+  --dfsn-cols: 4;
+  /* One look, light or dark Mac: a dark card at 80% that lets a fifth of the page through, with white names on any
+     page (Rim, 3 Nov; see-through, frosted, the Mac's glass and a blurred page copy were tried and dropped). */
+  --dfsn-card: rgba(18, 18, 20, 0.8);
+  --dfsn-rim: rgba(255, 255, 255, 0.14);
+  --dfsn-shine: rgba(255, 255, 255, 0.1);
+  --dfsn-text: #fff;
+  --dfsn-lift: rgba(255, 255, 255, 0.14);
+  --dfsn-ring: rgba(255, 255, 255, 0.24);
+  --dfsn-blank: #2a2b2f;
+}
+/* Firefox's preview count = the previews it didn't hide (cards our grid hides still count), for the left margin above. */
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(1):not([hidden])):not(:has(.ctrlTab-preview:nth-child(2):not([hidden]))) { --dfsn-n: 1; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(2):not([hidden])):not(:has(.ctrlTab-preview:nth-child(3):not([hidden]))) { --dfsn-n: 2; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(3):not([hidden])):not(:has(.ctrlTab-preview:nth-child(4):not([hidden]))) { --dfsn-n: 3; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(4):not([hidden])):not(:has(.ctrlTab-preview:nth-child(5):not([hidden]))) { --dfsn-n: 4; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(5):not([hidden])):not(:has(.ctrlTab-preview:nth-child(6):not([hidden]))) { --dfsn-n: 5; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(6):not([hidden])):not(:has(.ctrlTab-preview:nth-child(7):not([hidden]))) { --dfsn-n: 6; }
+/* Rows of four. Zen shows 7 tabs by default; with browser.ctrlTab.maxPreviews raised (16 = four rows) the cards shrink
+   to keep every row on screen. */
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(5):not([hidden])) { --dfsn-rows: 2; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(9):not([hidden])) { --dfsn-rows: 3; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(13):not([hidden])) { --dfsn-rows: 4; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(17):not([hidden])) { --dfsn-rows: 5; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(21):not([hidden])) { --dfsn-rows: 6; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(4)[hidden]) { --dfsn-cols: 3; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(3)[hidden]) { --dfsn-cols: 2; }
+#ctrlTab-panel:has(.ctrlTab-preview:nth-child(2)[hidden]) { --dfsn-cols: 1; }
+/* Grid: how many recent tabs, and how big. 3 x 3 shows 9 (the default: most people don't go back further), 4 x 3
+   shows 12 smaller, 3 x 2 shows 6.
+   The tab limit itself is Firefox's browser.ctrlTab.maxPreviews (12 in Rim's Zen); a mod setting can't change that
+   number, so the smaller grids hide the cards past 9 or 6. A hidden card can't take focus, so Tab stops at the last
+   card you see (Shift Tab goes back) instead of landing on an invisible one. */
+@media (-moz-pref("mod.dfs-nav.grid", "9")), (-moz-pref("mod.dfs-nav.grid", "6")) {
+  #ctrlTab-panel { --dfsn-grid-cols: 3; --dfsn-cols: 3; --dfsn-rows: 1; }
+  #ctrlTab-panel:has(.ctrlTab-preview:nth-child(4):not([hidden])) { --dfsn-rows: 2; }
+}
+@media (-moz-pref("mod.dfs-nav.grid", "9")) {
+  #ctrlTab-panel:has(.ctrlTab-preview:nth-child(7):not([hidden])) { --dfsn-rows: 3; }
+  #ctrlTab-panel .ctrlTab-preview:nth-child(n+10) { display: none !important; }
+}
+@media (-moz-pref("mod.dfs-nav.grid", "6")) {
+  #ctrlTab-panel:has(.ctrlTab-preview:nth-child(7):not([hidden])) { --dfsn-rows: 2; }
+  #ctrlTab-panel .ctrlTab-preview:nth-child(n+7) { display: none !important; }
+}
+
+/* The sidebar's width, which Zen keeps only in the sidebar's own style (--zen-sidebar-width: 172px). A mod can't read
+   a number from there, but it can match its first digits: 10px steps from 100 to 509px, so the card lands within 3px
+   of the page's middle. Hidden sidebar (compact mode): the page is the whole screen. Sidebar on the right: shift left. */
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 10"]) #ctrlTab-panel { --dfsn-side: 105px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 11"]) #ctrlTab-panel { --dfsn-side: 115px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 12"]) #ctrlTab-panel { --dfsn-side: 125px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 13"]) #ctrlTab-panel { --dfsn-side: 135px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 14"]) #ctrlTab-panel { --dfsn-side: 145px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 15"]) #ctrlTab-panel { --dfsn-side: 155px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 16"]) #ctrlTab-panel { --dfsn-side: 165px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 17"]) #ctrlTab-panel { --dfsn-side: 175px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 18"]) #ctrlTab-panel { --dfsn-side: 185px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 19"]) #ctrlTab-panel { --dfsn-side: 195px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 20"]) #ctrlTab-panel { --dfsn-side: 205px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 21"]) #ctrlTab-panel { --dfsn-side: 215px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 22"]) #ctrlTab-panel { --dfsn-side: 225px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 23"]) #ctrlTab-panel { --dfsn-side: 235px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 24"]) #ctrlTab-panel { --dfsn-side: 245px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 25"]) #ctrlTab-panel { --dfsn-side: 255px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 26"]) #ctrlTab-panel { --dfsn-side: 265px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 27"]) #ctrlTab-panel { --dfsn-side: 275px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 28"]) #ctrlTab-panel { --dfsn-side: 285px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 29"]) #ctrlTab-panel { --dfsn-side: 295px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 30"]) #ctrlTab-panel { --dfsn-side: 305px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 31"]) #ctrlTab-panel { --dfsn-side: 315px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 32"]) #ctrlTab-panel { --dfsn-side: 325px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 33"]) #ctrlTab-panel { --dfsn-side: 335px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 34"]) #ctrlTab-panel { --dfsn-side: 345px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 35"]) #ctrlTab-panel { --dfsn-side: 355px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 36"]) #ctrlTab-panel { --dfsn-side: 365px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 37"]) #ctrlTab-panel { --dfsn-side: 375px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 38"]) #ctrlTab-panel { --dfsn-side: 385px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 39"]) #ctrlTab-panel { --dfsn-side: 395px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 40"]) #ctrlTab-panel { --dfsn-side: 405px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 41"]) #ctrlTab-panel { --dfsn-side: 415px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 42"]) #ctrlTab-panel { --dfsn-side: 425px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 43"]) #ctrlTab-panel { --dfsn-side: 435px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 44"]) #ctrlTab-panel { --dfsn-side: 445px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 45"]) #ctrlTab-panel { --dfsn-side: 455px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 46"]) #ctrlTab-panel { --dfsn-side: 465px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 47"]) #ctrlTab-panel { --dfsn-side: 475px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 48"]) #ctrlTab-panel { --dfsn-side: 485px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 49"]) #ctrlTab-panel { --dfsn-side: 495px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-sidebar-expanded]:not([zen-compact-mode="true"]):has(#navigator-toolbox[style*="--zen-sidebar-width: 50"]) #ctrlTab-panel { --dfsn-side: 505px; --dfsn-gap: var(--zen-element-separation, 8px); }
+:root[zen-right-side="true"] #ctrlTab-panel { --dfsn-dir: -1; }
+#ctrlTab-panel #ctrlTab-showAll-container {
+  display: none !important;
+}
+
+/* The card: up to four previews to a row (Zen shows up to seven), fewer columns when there are fewer tabs. */
+#ctrlTab-panel #ctrlTab-previews {
+  display: grid !important;
+  grid-template-columns: repeat(var(--dfsn-cols), var(--dfsn-card-w)) !important;
+  gap: 8px !important;
+  width: max-content !important;
+  height: max-content !important;
+  flex: none !important;
+  margin: 0 auto !important;
+  translate: var(--dfsn-shift) 0 !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  border-radius: var(--dfsn-r-card) !important;
+  background: var(--dfsn-card) !important;
+  box-shadow:
+    inset 0 0 0 0.5px var(--dfsn-rim),
+    inset 0 1px 0 var(--dfsn-shine),
+    0 24px 60px -16px rgba(0, 0, 0, 0.5) !important;
+  color: var(--dfsn-text) !important;
+  animation: dfsn-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+/* The card eases in each time the panel opens: a short fade with a hint of scale, no slide. */
+@keyframes dfsn-in {
+  from { opacity: 0; scale: 0.985; }
+  to { opacity: 1; scale: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #ctrlTab-panel #ctrlTab-previews { animation: none; }
+}
+
+/* One tab: the page preview, its icon on a tile in the preview's bottom-left corner, the name centred under it. */
+#ctrlTab-panel .ctrlTab-preview {
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+  cursor: pointer !important; /* a card is a click target: click opens the tab, middle-click closes it */
+}
+#ctrlTab-panel .ctrlTab-preview * {
+  cursor: inherit !important;
+}
+/* No title tooltip next to the mouse: each card carries the tab's title as tooltiptext (the short names need it), so
+   while the mouse is over a card, the window's tooltips stay hidden. */
+:root:has(#ctrlTab-panel .ctrlTab-preview:hover) tooltip {
+  display: none !important;
+}
+#ctrlTab-panel .ctrlTab-preview-inner {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  row-gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: none !important;
+  border-radius: var(--dfsn-r-item) !important;
+  /* No transition on the lift: fading a background or ring repaints the whole full-screen panel every frame (measured
+     3 Nov: 18ms frames with it, 10ms without, Zen's own panel 9ms). Instant also feels snappier. */
+  transition: none !important;
+}
+#ctrlTab-panel .ctrlTab-canvas {
+  grid-row: 1 !important;
+  grid-column: 1 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  justify-self: stretch !important;
+  aspect-ratio: 16 / 10 !important;
+  border-radius: var(--dfsn-r-page) !important;
+  overflow: hidden !important;
+  background: var(--dfsn-blank) !important;
+  box-shadow: 0 0 0 0.5px var(--dfsn-rim) !important;
+  & > img,
+  & > canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: top !important;
+    display: block !important;
+  }
+}
+#ctrlTab-panel .ctrlTab-favicon-container {
+  grid-row: 1 !important;
+  grid-column: 1 !important;
+  align-self: end !important;
+  justify-self: start !important;
+  z-index: 1 !important;
+  margin: 0 0 8px 8px !important;
+  width: 36px !important;
+  height: 36px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: var(--dfsn-r-tile) !important;
+  background: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.12) !important;
+}
+/* Zen's own icons (Settings and other Zen pages) are drawn dark on the white tile. Site icons that come in white
+   (GitHub in dark mode) get a thin dark edge, so they still show on white. */
+#ctrlTab-panel .ctrlTab-favicon,
+#ctrlTab-panel .ctrlTab-favicon[src] {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  -moz-context-properties: fill, fill-opacity !important;
+  fill: #1d1d1f !important;
+  fill-opacity: 1 !important;
+  /* Each site's icon exactly as the site made it: no outline (a dark drop-shadow edge made Claude, WhatsApp and the DFS
+     star look cut out; Rim, 3 Nov). Zen's own line icons still take the dark fill above. */
+  filter: none !important;
+}
+/* No icon: no empty tile. (No centred big icon for tabs without a preview: while a thumbnail loads, every card has a
+   placeholder, so the icon jumped from the middle to the corner on each open.) */
+#ctrlTab-panel .ctrlTab-favicon-container:not(:has(.ctrlTab-favicon[src])) {
+  display: none !important;
+}
+#ctrlTab-panel .ctrlTab-label {
+  grid-row: 2 !important;
+  grid-column: 1 !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  text-align: center !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  opacity: 0.85;
+}
+
+/* The tab you'll land on lifts: a light fill and a thin light ring, no blue. */
+#ctrlTab-panel .ctrlTab-preview:focus > .ctrlTab-preview-inner {
+  background-color: var(--dfsn-lift) !important;
+  box-shadow: inset 0 0 0 1px var(--dfsn-ring) !important;
+}
+#ctrlTab-panel .ctrlTab-preview:focus .ctrlTab-label {
+  opacity: 1;
+}
+
+/* Close hint: rest on a tab for a moment and a small "[W] Close" fades into the top-right corner of its preview:
+   you're already holding Ctrl, so pressing W closes that tab (Firefox's own panel does this; a middle-click works
+   too). Quick switching never shows it: the hint waits 0.6s, then eases in. "Close", not "Quit": on the Mac Quit means the app.
+   Two layers in the preview's corner: ::after is the dark pill with the word, ::before the W keycap on its left
+   (the pill has a fixed width, so the keycap knows where to sit). A mod can't add a real close button: the whole
+   card is one button that opens the tab. */
+@media (-moz-pref("mod.dfs-nav.close-hint")) {
+  #ctrlTab-panel .ctrlTab-preview-inner::after,
+  #ctrlTab-panel .ctrlTab-preview-inner::before {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: start;
+    justify-self: end;
+    z-index: 2;
+    box-sizing: border-box;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 80ms ease-out;
+  }
+  #ctrlTab-panel .ctrlTab-preview-inner::after {
+    content: "Close";
+    width: 72px;
+    height: 24px;
+    margin: 8px 8px 0 0;
+    padding: 4px 8px 4px 30px;
+    border-radius: calc(var(--dfsn-r-page) - 1px);
+    font: 500 12px/16px -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.66);
+    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  #ctrlTab-panel .ctrlTab-preview-inner::before {
+    content: "W";
+    z-index: 3;
+    width: 18px;
+    height: 16px;
+    margin: 12px 56px 0 0;
+    border-radius: 4px;
+    font: 700 10px/16px -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    text-align: center;
+    color: #1d1d1f;
+    background: linear-gradient(#fbfbfc, #e4e4e7);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.45), inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+  }
+  #ctrlTab-panel .ctrlTab-preview:focus > .ctrlTab-preview-inner::after,
+  #ctrlTab-panel .ctrlTab-preview:focus > .ctrlTab-preview-inner::before {
+    opacity: 1;
+    transition: opacity 180ms cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s;
+  }
+}
+
+/* Short names for known sites: the panel keeps each tab's full title in tooltiptext, and the shown name is the
+   label's ::before, so a known title pattern can swap it ("Sites - Webflow" reads "Webflow"). Tabs you renamed in
+   Zen keep your name unless it matches a pattern. Later lines win. */
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="webflow" i] .ctrlTab-label::before { content: "Webflow" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext^="github" i] .ctrlTab-label::before { content: "GitHub" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="\b7  github" i] .ctrlTab-label::before { content: "GitHub" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="whatsapp" i] .ctrlTab-label::before { content: "WhatsApp" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="youtube" i] .ctrlTab-label::before { content: "YouTube" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="gmail" i] .ctrlTab-label::before { content: "Gmail" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext$=" / x" i] .ctrlTab-label::before { content: "X" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="figma" i] .ctrlTab-label::before { content: "Figma" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="notion" i] .ctrlTab-label::before { content: "Notion" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="linear" i] .ctrlTab-label::before { content: "Linear" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="slack" i] .ctrlTab-label::before { content: "Slack" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext$=" - coda" i] .ctrlTab-label::before { content: "Coda" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="superhuman" i] .ctrlTab-label::before { content: "Superhuman" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="airtable" i] .ctrlTab-label::before { content: "Airtable" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="stripe" i] .ctrlTab-label::before { content: "Stripe" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="memberstack" i] .ctrlTab-label::before { content: "Memberstack" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="google drive" i] .ctrlTab-label::before { content: "Drive" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="google docs" i] .ctrlTab-label::before { content: "Docs" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="google sheets" i] .ctrlTab-label::before { content: "Sheets" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="google calendar" i] .ctrlTab-label::before { content: "Calendar" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext*="chatgpt" i] .ctrlTab-label::before { content: "ChatGPT" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext$=" - claude" i] .ctrlTab-label::before { content: "Claude" !important; }

@@ -1,0 +1,20 @@
+{
+  "6d6f6473-6466-7320-7175-696574303031": {
+    "id": "6d6f6473-6466-7320-7175-696574303031",
+    "name": "DFS Quiet",
+    "description": "For keyboard people: hides the buttons a shortcut covers and the URL bar row.",
+    "homepage": "https://github.com/Digital-Feng-Shui/dfs-zen-mods/tree/main/dfs-quiet",
+    "style": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/readme.md",
+    "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/preferences.json",
+    "author": "Digital Feng Shui",
+    "version": "0.17.0",
+    "image": "",
+    "tags": [
+      "quiet",
+      "keyboard"
+    ],
+    "createdAt": "2026-10-31",
+    "updatedAt": "2026-11-02"
+  }
+}

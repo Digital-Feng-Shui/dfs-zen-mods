@@ -1,0 +1,85 @@
+[
+  {
+    "property": "mod.dfs-calm.selected-tab",
+    "label": "Selected tab",
+    "type": "dropdown",
+    "defaultValue": "edge",
+    "placeholder": "Zen's own",
+    "options": [
+      {
+        "label": "Edge",
+        "value": "edge"
+      },
+      {
+        "label": "Glass",
+        "value": "glass"
+      },
+      {
+        "label": "Clear",
+        "value": "clear"
+      }
+    ]
+  },
+  {
+    "property": "mod.dfs-calm.ghost-tabs",
+    "label": "Sleeping tabs",
+    "type": "dropdown",
+    "defaultValue": "grey",
+    "placeholder": "Like the others",
+    "options": [
+      {
+        "label": "Faded, grey icons",
+        "value": "grey"
+      },
+      {
+        "label": "Faded",
+        "value": "faded"
+      }
+    ]
+  },
+  {
+    "property": "mod.dfs-calm.tab-text",
+    "label": "Tab text size",
+    "type": "dropdown",
+    "defaultValue": "12",
+    "placeholder": "Zen's own (14px)",
+    "options": [
+      {
+        "label": "12px",
+        "value": "12"
+      },
+      {
+        "label": "11px",
+        "value": "11"
+      },
+      {
+        "label": "13px",
+        "value": "13"
+      }
+    ]
+  },
+  {
+    "property": "mod.dfs-calm.space-heading",
+    "label": "Space name as a small heading",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-calm.faint-buttons",
+    "label": "Fade small buttons until you hover",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-calm.hide-link-preview",
+    "label": "Hide the link preview",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-calm.tidy-rows",
+    "label": "Tidy top and bottom rows",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]

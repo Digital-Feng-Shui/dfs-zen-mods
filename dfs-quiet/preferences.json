@@ -1,0 +1,14 @@
+[
+  {
+    "property": "mod.dfs-quiet.hide-buttons",
+    "label": "Hide buttons a shortcut covers",
+    "type": "checkbox",
+    "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-quiet.hide-urlbar",
+    "label": "Hide the URL bar (Cmd L opens it)",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]

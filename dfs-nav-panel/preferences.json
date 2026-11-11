@@ -1,0 +1,28 @@
+[
+  {
+    "property": "mod.dfs-nav.grid",
+    "label": "Grid",
+    "type": "dropdown",
+    "defaultValue": "9",
+    "options": [
+      {
+        "label": "3 x 3 (9 tabs)",
+        "value": "9"
+      },
+      {
+        "label": "4 x 3 (12 tabs, smaller)",
+        "value": "12"
+      },
+      {
+        "label": "3 x 2 (6 tabs)",
+        "value": "6"
+      }
+    ]
+  },
+  {
+    "property": "mod.dfs-nav.close-hint",
+    "label": "Close hint (W)",
+    "type": "checkbox",
+    "defaultValue": true
+  }
+]
