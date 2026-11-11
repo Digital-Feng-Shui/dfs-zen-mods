@@ -9,7 +9,7 @@
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/preferences.json",
     "author": "Digital Feng Shui",
     "version": "1.6.0",
-    "image": "",
+    "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/image.png",
     "tags": [
       "calm",
       "tabs"

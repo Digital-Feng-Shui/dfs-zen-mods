@@ -9,7 +9,7 @@
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/preferences.json",
     "author": "Digital Feng Shui",
     "version": "1.6.0",
-    "image": "",
+    "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/image.png",
     "tags": [
       "calm",
       "tabs"
@@ -27,7 +27,7 @@
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/preferences.json",
     "author": "Digital Feng Shui",
     "version": "0.17.0",
-    "image": "",
+    "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/image.png",
     "tags": [
       "quiet",
       "keyboard"
@@ -38,19 +38,19 @@
   "6d6f6473-6466-7320-6e61-763030303031": {
     "id": "6d6f6473-6466-7320-6e61-763030303031",
     "name": "DFS Nav Panel",
-    "description": "A calmer Ctrl Tab panel: your recent tabs as big page previews on a dark card, centred on the page, each icon on a white tile, the name underneath.",
+    "description": "Your recent tabs as big previews on one dark card, centred on the page. A calmer Ctrl Tab.",
     "homepage": "https://github.com/Digital-Feng-Shui/dfs-zen-mods/tree/main/dfs-nav-panel",
     "style": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/chrome.css",
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "0.10.4",
-    "image": "",
+    "version": "0.10.5",
+    "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/image.png",
     "tags": [
       "ctrl-tab",
       "calm"
     ],
     "createdAt": "2026-11-02",
-    "updatedAt": "2026-11-03"
+    "updatedAt": "2026-11-11"
   }
 }

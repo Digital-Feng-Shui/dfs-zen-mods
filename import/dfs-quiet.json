@@ -9,7 +9,7 @@
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/preferences.json",
     "author": "Digital Feng Shui",
     "version": "0.17.0",
-    "image": "",
+    "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/image.png",
     "tags": [
       "quiet",
       "keyboard"

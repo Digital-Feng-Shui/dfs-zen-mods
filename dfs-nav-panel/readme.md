@@ -5,9 +5,9 @@ A calmer Ctrl Tab panel. Your recent tabs show as big page previews on one dark 
 Works with "Ctrl+Tab cycles through tabs in recently used order" on (Settings, search "Ctrl+Tab"). Tap Ctrl Tab to jump back to your last tab; hold Ctrl and tap Tab to see the panel; keep holding Ctrl and press W to close the tab you're on.
 
 Settings:
-- **Grid.** 3 x 3 shows your last 9 tabs (the default), 4 x 3 shows 12 smaller, 3 x 2 shows 6. For 12, set browser.ctrlTab.maxPreviews to 12 in about:config (Zen shows 7 by default).
+- **Grid.** 3 x 3 (the default), 4 x 3 smaller, or 3 x 2. Zen shows 7 tabs in Ctrl Tab by default; to fill the grid, set browser.ctrlTab.maxPreviews in about:config to 9 (or 12 for 4 x 3). Sleeping tabs are left out.
 - **Close hint.** Rest on a tab and a small [W] Close shows in its corner.
 
 Replaces the Better CtrlTab Panel mod.
 
-By Digital Feng Shui. v0.10.4, 3 Nov 2026.
+By Digital Feng Shui. v0.10.5, 11 Nov 2026.

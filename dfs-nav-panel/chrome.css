@@ -336,12 +336,13 @@
 
 /* Short names for known sites: the panel keeps each tab's full title in tooltiptext, and the shown name is the
    label's ::before, so a known title pattern can swap it ("Sites - Webflow" reads "Webflow"). Tabs you renamed in
-   Zen keep your name unless it matches a pattern. Later lines win. */
+   Zen keep your name unless it matches a pattern. Later lines win. YouTube matches only titles that end in YouTube
+   ("Video - YouTube", "(3) YouTube"), so a page that only mentions YouTube keeps its own name. */
 #ctrlTab-panel .ctrlTab-preview[tooltiptext*="webflow" i] .ctrlTab-label::before { content: "Webflow" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext^="github" i] .ctrlTab-label::before { content: "GitHub" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext*="\b7  github" i] .ctrlTab-label::before { content: "GitHub" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext*="whatsapp" i] .ctrlTab-label::before { content: "WhatsApp" !important; }
-#ctrlTab-panel .ctrlTab-preview[tooltiptext*="youtube" i] .ctrlTab-label::before { content: "YouTube" !important; }
+#ctrlTab-panel .ctrlTab-preview[tooltiptext$="youtube" i] .ctrlTab-label::before { content: "YouTube" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext*="gmail" i] .ctrlTab-label::before { content: "Gmail" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext$=" / x" i] .ctrlTab-label::before { content: "X" !important; }
 #ctrlTab-panel .ctrlTab-preview[tooltiptext*="figma" i] .ctrlTab-label::before { content: "Figma" !important; }

@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>DFS Zen mod preview</title>
+<style>
+  /* Store preview for one DFS Zen mod: name and one line on the left, a real Zen screenshot on the right. 1600x900. */
+  html, body { margin: 0; width: 1600px; height: 900px; }
+  body {
+    background: radial-gradient(ellipse 70% 85% at 70% 50%, #26262b 0%, #161618 60%, #111113 100%);
+    color: #f4f1ea; font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    display: grid; grid-template-columns: 520px 1fr; align-items: center; gap: 56px; padding: 0 72px; box-sizing: border-box;
+  }
+  .kicker { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,241,234,.5); margin: 0 0 18px; }
+  h1 { font-size: 72px; line-height: 1; letter-spacing: -0.035em; margin: 0 0 24px; font-weight: 750; }
+  p { font-size: 23px; line-height: 1.45; color: rgba(244,241,234,.66); margin: 0; }
+  .shot { justify-self: center; max-width: 100%; max-height: 780px; border-radius: 18px; box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08); object-fit: contain; }
+  .brand { position: absolute; left: 72px; bottom: 40px; font-size: 15px; color: rgba(244,241,234,.45); }
+</style></head>
+<body>
+  <div><div class="kicker">Zen mod</div><h1 id="name">DFS Calm</h1><p id="line">A calmer sidebar.</p></div>
+  <canvas class="shot" id="shot"></canvas>
+  <div class="brand">by Digital Feng Shui</div>
+</body></html>

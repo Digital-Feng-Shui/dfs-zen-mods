@@ -25,6 +25,9 @@ for folder in MODS:
         preferences=f"{RAW}/{folder}/preferences.json",
         author="Digital Feng Shui",
     )
+    # The store preview lives only in this repo (made by design/make-previews.cjs from a real Zen screenshot).
+    if (here / folder / "image.png").exists():
+        theme["image"] = f"{RAW}/{folder}/image.png"
     theme_path.write_text(json.dumps(theme, indent=2, ensure_ascii=False) + "\n")   # the working folder follows too
     out = here / folder
     out.mkdir(exist_ok=True)
