@@ -10,6 +10,10 @@ Three mods for [Zen Browser](https://zen-browser.app), by [Digital Feng Shui](ht
 
 Start with DFS Calm. Add DFS Quiet once you know your shortcuts.
 
+![DFS Calm](dfs-calm/preview.png)
+![DFS Quiet](dfs-quiet/preview.png)
+![DFS Nav Panel](dfs-nav-panel/preview.png)
+
 ## Install
 1. Download an import file: [all three mods](import/dfs-zen-mods.json), or one: [DFS Calm](import/dfs-calm.json), [DFS Quiet](import/dfs-quiet.json), [DFS Nav Panel](import/dfs-nav-panel.json). On the file's page, click **Download raw file**.
 2. In Zen, open **Settings › Mods**, click **Import** and choose the file.
