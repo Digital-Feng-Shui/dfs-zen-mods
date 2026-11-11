@@ -19,4 +19,4 @@ Start with DFS Calm. Add DFS Quiet once you know your shortcuts.
 Zen only updates mods from its own store by itself. To get a newer version of these, import the file again.
 
 ---
-© Digital Feng Shui. Free to use; please don't republish the mods as your own.
+© Digital Feng Shui. Licensed under [CC BY-NC-SA 4.0](LICENSE), the licence of Zen's mod store: use and change the mods freely, not for commercial use, credit Digital Feng Shui, and share changed versions under the same licence.
