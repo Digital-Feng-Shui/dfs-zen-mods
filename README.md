@@ -15,12 +15,16 @@ Start with DFS Calm. Add DFS Quiet once you know your shortcuts.
 ![DFS Nav Panel](dfs-nav-panel/preview.png)
 
 ## Install
-1. Download an import file: [all three mods](import/dfs-zen-mods.json), or one: [DFS Calm](import/dfs-calm.json), [DFS Quiet](import/dfs-quiet.json), [DFS Nav Panel](import/dfs-nav-panel.json). On the file's page, click **Download raw file**.
-2. In Zen, open **Settings › Mods**, click **Import** and choose the file.
-3. Each mod has its own settings: click the gear on its card.
+Zen's Import button only brings back mods from Zen's own store, so these install with a short script, [install.js](install.js). It hands Zen the three mods' GitHub links, and Zen downloads and turns them on itself.
+
+1. In Zen, open `about:config`, search for `devtools.chrome.enabled` and set it to **true**.
+2. Open the Browser Console: **⌘⇧J** on a Mac, **Ctrl+Shift+J** elsewhere (or Tools › Browser Tools › Browser Console).
+3. Copy everything in [install.js](install.js), paste it into the line at the bottom of the console and press **Enter**. If the console asks, type `allow pasting` first.
+4. The console answers with "Installed: DFS Calm, DFS Quiet, DFS Nav Panel". All three are on. Each one has its own settings in **Settings › Mods** (the gear on its card); switch off any you don't want there.
+5. You can set `devtools.chrome.enabled` back to false.
 
 ## Updates
-Zen only updates mods from its own store by itself. To get a newer version of these, import the file again.
+Zen only updates mods from its own store by itself. To get the newest versions of these, run the same script again: it fetches the latest and keeps your settings.
 
 ---
 © Digital Feng Shui. Licensed under [CC BY-NC-SA 4.0](LICENSE), the licence of Zen's mod store: use and change the mods freely, not for commercial use, credit Digital Feng Shui, and share changed versions under the same licence.

@@ -2,6 +2,7 @@
 
   python3 -I design/demo-zen.py start      fresh profile in ~/Library/Caches/dfs-zen-demo, launch, install mods, open tabs,
                                            then keep running (in the background) holding the one Marionette session
+  python3 -I design/demo-zen.py start --bare   the same without the mods, to test Zen's Import
   python3 -I design/demo-zen.py js '<js>'  run chrome-scope JS in the demo window (Marionette on port 2829)
   python3 -I design/demo-zen.py ctrltab    bring the demo window forward and open Ctrl Tab (stays open, no key held)
   python3 -I design/demo-zen.py bounds     the demo window's position and size on screen (for cropping a ⌘⇧3 shot)
@@ -96,10 +97,10 @@ class M:
         return r.get("value") if isinstance(r, dict) else r
 
 
-def fresh_profile():
+def fresh_profile(bare=False):
     if PROFILE.exists(): shutil.rmtree(PROFILE)
     themes = PROFILE / "chrome/zen-themes"; themes.mkdir(parents=True)
-    entries = json.loads((REPO / "import/dfs-zen-mods.json").read_text())
+    entries = {} if bare else json.loads((REPO / "import/dfs-zen-mods.json").read_text())
     for mod_id, entry in entries.items():
         mod = entry["homepage"].rsplit("/", 1)[1]  # .../tree/main/dfs-calm
         dest = themes / mod_id; dest.mkdir()
@@ -112,7 +113,8 @@ def fresh_profile():
 def wait_for_marionette(seconds=40):
     end = time.time() + seconds
     while time.time() < end:
-        try: return M(timeout=5)
+        try:
+            m = M(timeout=5); m.s.settimeout(180); return m  # short wait to connect, long wait for scripts
         except OSError: time.sleep(0.5)
     sys.exit("The demo Zen did not open Marionette on port %d." % PORT)
 
@@ -139,8 +141,8 @@ return (async () => {
 """
 
 
-def start():
-    fresh_profile()
+def start(bare=False):
+    fresh_profile(bare)
     subprocess.run(["open", "-n", "-a", "Zen", "--env", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1", "--args",
                     "-profile", str(PROFILE), "-no-remote", "--marionette"], check=True)
     m = wait_for_marionette()
@@ -195,7 +197,7 @@ BOUNDS = "return { x: window.screenX, y: window.screenY, w: window.outerWidth, h
 
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "start"
-    if cmd == "start": start()
+    if cmd == "start": start(bare="--bare" in sys.argv)  # --bare: no mods installed (to test an import)
     elif cmd == "js": print(json.dumps(relay(sys.argv[2]), indent=1))
     elif cmd == "ctrltab": print(relay(CTRLTAB))
     elif cmd == "bounds": print(json.dumps(relay(BOUNDS)))
