@@ -1,5 +1,5 @@
 // Installs or updates the DFS Zen Mods. Paste into Zen's Browser Console (see README).
-(async () => {
+await (async () => {
   const list = "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/import/dfs-zen-mods.json";
   const ours = await (await fetch(list, { cache: "no-store" })).json();
   const mods = await gZenMods.getMods();

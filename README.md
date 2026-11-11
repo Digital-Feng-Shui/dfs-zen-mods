@@ -20,7 +20,7 @@ Zen's Import button only brings back mods from Zen's own store, so these install
 1. In Zen, open `about:config`, search for `devtools.chrome.enabled` and set it to **true**.
 2. Open the Browser Console: **⌘⇧J** on a Mac, **Ctrl+Shift+J** elsewhere (or Tools › Browser Tools › Browser Console).
 3. Copy everything in [install.js](install.js), paste it into the line at the bottom of the console and press **Enter**. If the console asks, type `allow pasting` first.
-4. The console answers with "Installed: DFS Calm, DFS Quiet, DFS Nav Panel". All three are on. Each one has its own settings in **Settings › Mods** (the gear on its card); switch off any you don't want there.
+4. The console answers with a line that starts with "Installed:" and names the three mods. All three are on. Each one has its own settings in **Settings › Mods** (the gear on its card); switch off any you don't want there.
 5. You can set `devtools.chrome.enabled` back to false.
 
 ## Updates
