@@ -8,14 +8,14 @@
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/image.png",
     "tags": [
       "calm",
       "tabs"
     ],
     "createdAt": "2026-11-02",
-    "updatedAt": "2026-11-02"
+    "updatedAt": "2026-11-14"
   },
   "6d6f6473-6466-7320-7175-696574303031": {
     "id": "6d6f6473-6466-7320-7175-696574303031",
@@ -44,13 +44,13 @@
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "0.10.5",
+    "version": "0.10.6",
     "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/image.png",
     "tags": [
       "ctrl-tab",
       "calm"
     ],
     "createdAt": "2026-11-02",
-    "updatedAt": "2026-11-11"
+    "updatedAt": "2026-11-14"
   }
 }

@@ -8,13 +8,13 @@
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "0.10.5",
+    "version": "0.10.6",
     "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-nav-panel/image.png",
     "tags": [
       "ctrl-tab",
       "calm"
     ],
     "createdAt": "2026-11-02",
-    "updatedAt": "2026-11-11"
+    "updatedAt": "2026-11-14"
   }
 }

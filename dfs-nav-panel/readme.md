@@ -10,4 +10,4 @@ Settings:
 
 Replaces the Better CtrlTab Panel mod.
 
-By Digital Feng Shui. v0.10.5, 11 Nov 2026.
+By Digital Feng Shui. v0.10.6, 14 Nov 2026.

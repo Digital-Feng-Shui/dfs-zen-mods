@@ -240,8 +240,11 @@
     flex: 1 1 auto !important;
     min-width: 0 !important;
   }
+  /* The + keeps the bottom-right corner even when it's alone in the row: with one space Zen hides the space icons,
+     and DFS Quiet hides the library button, so it would slide to the left (1.6.1). */
   #zen-sidebar-foot-buttons #zen-create-new-button {
     margin: 0 !important;
+    margin-inline-start: auto !important;
     flex: 0 0 var(--dfsc-foot) !important;
   }
   #zen-sidebar-foot-buttons #zen-workspaces-button:has(> toolbarbutton:nth-child(5)) {

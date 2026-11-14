@@ -3,6 +3,7 @@
   python3 -I design/demo-zen.py start      fresh profile in ~/Library/Caches/dfs-zen-demo, launch, install mods, open tabs,
                                            then keep running (in the background) holding the one Marionette session
   python3 -I design/demo-zen.py start --bare   the same without the mods, to test Zen's Import
+  ... start --app /path/Zen.app             use another Zen (a newer release, for design/check-mods.py)
   python3 -I design/demo-zen.py js '<js>'  run chrome-scope JS in the demo window (Marionette on port 2829)
   python3 -I design/demo-zen.py ctrltab    bring the demo window forward and open Ctrl Tab (stays open, no key held)
   python3 -I design/demo-zen.py bounds     the demo window's position and size on screen (for cropping a ⌘⇧3 shot)
@@ -143,7 +144,8 @@ return (async () => {
 
 def start(bare=False):
     fresh_profile(bare)
-    subprocess.run(["open", "-n", "-a", "Zen", "--env", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1", "--args",
+    app = sys.argv[sys.argv.index("--app") + 1] if "--app" in sys.argv else "Zen"  # --app <path to another Zen.app>
+    subprocess.run(["open", "-n", "-a", app, "--env", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1", "--args",
                     "-profile", str(PROFILE), "-no-remote", "--marionette"], check=True)
     m = wait_for_marionette()
     time.sleep(3)  # let the first window settle
