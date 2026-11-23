@@ -41,13 +41,14 @@ def static():
         bad = [(i + 1, ch) for i, line in enumerate(code.splitlines()) for ch in line if ord(ch) > 127]
         for ln, ch in bad: say("FAIL", f"{mod}: non-ASCII {ch!r} outside a comment on line {ln} (Zen reads sheets without UTF-8)")
         if code.count("{") != code.count("}"): say("FAIL", f"{mod}: braces don't balance ({code.count('{')} open, {code.count('}')} close)")
-        for f in ("chrome.css", "preferences.json", "readme.md"):
-            if (WORK / mod / f).read_bytes() != (REPO / mod / f).read_bytes():
-                say("FAIL", f"{mod}/{f}: the public copy differs from the working folder (run sync.py)")
-        theme = json.loads((WORK / mod / "theme.json").read_text())
         entry = next(e for e in entries.values() if e["homepage"].endswith("/" + mod))
+        vs = {"import file": entry["version"]}
+        if (WORK / mod / "theme.json").exists():  # Rim's working folders; a plain clone of the repo has none (Greptile, 23 Nov)
+            for f in ("chrome.css", "preferences.json", "readme.md"):
+                if (WORK / mod / f).read_bytes() != (REPO / mod / f).read_bytes():
+                    say("FAIL", f"{mod}/{f}: the public copy differs from the working folder (run sync.py)")
+            vs["theme.json"] = json.loads((WORK / mod / "theme.json").read_text())["version"]
         readme_v = re.search(r"v(\d+\.\d+\.\d+)", (REPO / mod / "readme.md").read_text())
-        vs = {"theme.json": theme["version"], "import file": entry["version"]}
         if readme_v: vs["readme"] = readme_v.group(1)  # only Nav Panel's readme names its version
         if len(set(vs.values())) != 1: say("FAIL", f"{mod}: versions disagree {vs}")
         if len(entry["name"]) >= 25: say("FAIL", f"{mod}: store name {len(entry['name'])} chars (must be under 25)")
@@ -56,7 +57,7 @@ def static():
         for t in transitions:
             if re.search(r"background|box-shadow|\ball\b", t): say("note", f"{mod}: transition on {t.strip()} (repaints; see How to work here)")
         if not out or not any(l.split()[0] == "FAIL" and l.split()[1].startswith(mod) for l in out):
-            say("ok", f"{mod}: settings, characters, braces, copies and versions ({vs['theme.json']})")
+            say("ok", f"{mod}: settings, characters, braces, copies and versions ({vs['import file']})")
     return out
 
 

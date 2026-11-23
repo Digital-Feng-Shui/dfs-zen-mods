@@ -11,7 +11,10 @@
 
 It runs next to your own Zen (-no-remote), with a second Zen icon in the Dock while it is open.
 Why a held session: once Zen has essentials and pinned tabs, a new Marionette session fails (registerWindow meets a
-tab without a browser), so `start` keeps the first session and the other commands talk to it on port 2830."""
+tab without a browser), so `start` keeps the first session and the other commands talk to it through a Unix socket
+in an owner-only folder (~/Library/Caches/dfs-zen-demo-relay, mode 700): the session can run privileged code, so no
+other account on the Mac may reach it (Greptile review, 23 Nov; it was a TCP port before). Marionette itself only takes
+one session, and the held one blocks any other."""
 import json, os, shutil, socket, subprocess, sys, time
 from pathlib import Path
 
@@ -19,7 +22,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 PROFILE = Path.home() / "Library/Caches/dfs-zen-demo"
 PORT = 2829
-RELAY = 2830  # the held session listens here
+RELAY_DIR = Path.home() / "Library/Caches/dfs-zen-demo-relay"  # owner-only folder for the relay socket
+RELAY = RELAY_DIR / "relay.sock"
 MODS = ["dfs-calm", "dfs-quiet", "dfs-nav-panel"]
 
 PREFS = {
@@ -155,9 +159,14 @@ def start(bare=False):
 
 
 def serve(m):
-    srv = socket.socket(); srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    srv.bind(("127.0.0.1", RELAY)); srv.listen(1)
-    print("holding the session on port %d" % RELAY, flush=True)
+    RELAY_DIR.mkdir(mode=0o700, exist_ok=True); os.chmod(RELAY_DIR, 0o700)
+    if RELAY.exists(): RELAY.unlink()
+    srv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    old = os.umask(0o177)  # the socket file is born owner-only (600)
+    try: srv.bind(str(RELAY))
+    finally: os.umask(old)
+    srv.listen(1)
+    print("holding the session on %s" % RELAY, flush=True)
     while True:
         c, _ = srv.accept()
         with c:
@@ -171,11 +180,12 @@ def serve(m):
                 if isinstance(e, OSError): return
                 out = {"error": str(e)}
             c.sendall(json.dumps(out).encode() + b"\n")
-            if json.loads(data).get("quit"): return
+            if json.loads(data).get("quit"):
+                RELAY.unlink(missing_ok=True); return
 
 
 def relay(script, quit=False):
-    c = socket.create_connection(("127.0.0.1", RELAY), timeout=90)
+    c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); c.settimeout(180); c.connect(str(RELAY))
     c.sendall(json.dumps({"js": script, "quit": quit}).encode() + b"\n")
     data = b""
     while not data.endswith(b"\n"):
