@@ -21,7 +21,7 @@ REPO = Path(__file__).resolve().parent.parent
 def zen_running_with(profile: Path) -> bool:
     """Zen's helper processes carry the profile path in their arguments, so a profile is in use while any process names it."""
     out = subprocess.run(["ps", "-axo", "args="], capture_output=True, text=True).stdout
-    return any(str(profile) in line for line in out.splitlines())
+    return any(str(profile) in line and "update-my-zen" not in line for line in out.splitlines())  # not this script itself
 
 
 def build_stylesheet(profile: Path, mods: dict) -> str:
