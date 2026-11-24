@@ -215,7 +215,13 @@ def main():
     elif cmd == "bounds": print(json.dumps(relay(BOUNDS)))
     elif cmd == "quit":
         try: relay("Services.startup.quit(Ci.nsIAppStartup.eAttemptQuit); return 1;", quit=True)
-        except Exception: pass
+        except BaseException: pass
+        # the quit above doesn't always land; a plain TERM is Zen's own clean quit
+        for _ in range(15):
+            ps = subprocess.run(["pgrep", "-f", f"-profile {PROFILE}"], capture_output=True, text=True).stdout.split()
+            if not ps: break
+            if _ == 5: subprocess.run(["kill", ps[0]])
+            time.sleep(1)
     else: sys.exit(__doc__)
 
 
