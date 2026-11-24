@@ -79,7 +79,7 @@ return (async () => {
   const resetAll = async () => { for (const [p, v] of Object.entries(DEFAULTS)) typeof v === "boolean" ? prefs.setBoolPref(p, v) : prefs.setStringPref(p, v); tick(); await wait(600); tick(); };
   const DEFAULTS = { "mod.dfs-calm.selected-tab": "edge", "mod.dfs-calm.ghost-tabs": "grey", "mod.dfs-calm.tab-text": "12",
     "mod.dfs-calm.space-heading": true, "mod.dfs-calm.faint-buttons": true, "mod.dfs-calm.hide-link-preview": true,
-    "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
+    "mod.dfs-calm.tidy-rows": true, "mod.dfs-calm.short-menus": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
     "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true };
   await resetAll();
 
@@ -158,6 +158,17 @@ return (async () => {
   await setPref("mod.dfs-calm.hide-link-preview", false);
   ok("Calm setting: link preview back", cs($("#statuspanel"))?.display !== "none", cs($("#statuspanel"))?.display);
   await resetAll();
+
+  // Calm: shorter right-click menus (needs Zen-drawn menus on a Mac; the check switches them on for itself)
+  const nativeWas = prefs.getBoolPref("widget.macos.native-context-menus", true);
+  prefs.setBoolPref("widget.macos.native-context-menus", false); tick();
+  const tabMenu = $("#tabContextMenu"), st = gBrowser.selectedTab.getBoundingClientRect();
+  gBrowser.selectedTab.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: st.x + 20, clientY: st.y + 10, screenX: mozInnerScreenX + st.x + 20, screenY: mozInnerScreenY + st.y + 10 }));
+  await wait(700); tick(); await wait(200); tick();
+  const menuItems = [...tabMenu.children].filter(c => cs(c).display !== "none" && !c.hidden && c.getBoundingClientRect().height > 0).sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).map(c => c.label);
+  tabMenu.hidePopup(); await wait(300);
+  prefs.setBoolPref("widget.macos.native-context-menus", nativeWas);
+  ok("Calm: tab menu starts with Close Tab, short", menuItems[0] === "Close Tab" && menuItems.length <= 12, `${menuItems.length} items: ${menuItems.join(", ")}`);
 
   // 3. DFS Quiet
   for (const id of ["back-button", "forward-button", "stop-reload-button", "reload-button"]) {

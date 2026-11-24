@@ -81,5 +81,11 @@
     "label": "Tidy top and bottom rows",
     "type": "checkbox",
     "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-calm.short-menus",
+    "label": "Shorter right-click menus",
+    "type": "checkbox",
+    "defaultValue": true
   }
 ]

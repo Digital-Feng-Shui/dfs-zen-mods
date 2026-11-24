@@ -4,7 +4,7 @@ Three mods for [Zen Browser](https://zen-browser.app), by [Digital Feng Shui](ht
 
 | Mod | For | What it does |
 | --- | --- | --- |
-| [DFS Calm](dfs-calm) | Everyone | A calmer sidebar: a clear selected tab, sleeping tabs that fade, one text size, small buttons that wait until you hover, tidy margins, no link preview. |
+| [DFS Calm](dfs-calm) | Everyone | A calmer sidebar: a clear selected tab, sleeping tabs that fade, one text size, small buttons that wait until you hover, tidy margins, no link preview, shorter right-click menus. |
 | [DFS Quiet](dfs-quiet) | Keyboard people | Hides the buttons a shortcut covers (back, forward, reload and more) and keeps the URL bar row closed: ⌘T and ⌘L open it over the page. |
 | [DFS Nav Panel](dfs-nav-panel) | Ctrl Tab users | Your recent tabs as big previews on one dark card, centred on the page. |
 

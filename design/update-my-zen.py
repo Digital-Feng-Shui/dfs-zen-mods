@@ -2,6 +2,8 @@
 
   python3 -I design/update-my-zen.py "<profile folder>"          waits until Zen is closed, then updates
   python3 -I design/update-my-zen.py "<profile folder>" --now    profile must already be closed (no waiting)
+  ... --zen-menus   also lets Zen draw its own right-click menus (widget.macos.native-context-menus false), which
+                    DFS Calm's "Shorter right-click menus" needs on a Mac
 
 What it does, with Zen closed (Zen keeps its mod list in memory and writes it back when it quits):
 1. each mod's files from this repo go into <profile>/chrome/zen-themes/<id>/ (only mods that are already in Zen's list;
@@ -69,7 +71,14 @@ def main():
         print("Waiting for Zen to close (Cmd Q in Zen)…", flush=True)
         while zen_running_with(profile): time.sleep(1)
         time.sleep(2)  # Zen writes its files on the way out
-    print("Updated: " + ", ".join(update(profile)) + ". Open Zen again: the new versions load as it starts.", flush=True)
+    done = update(profile)
+    if "--zen-menus" in sys.argv:
+        prefs = profile / "prefs.js"; text = prefs.read_text()
+        shutil.copy(prefs, prefs.with_name(prefs.name + ".before-dfs-update"))
+        line = 'user_pref("widget.macos.native-context-menus", false);'
+        text = re.sub(r'user_pref\("widget\.macos\.native-context-menus", (true|false)\);', line, text) if "native-context-menus" in text else text.rstrip("\n") + "\n" + line + "\n"
+        prefs.write_text(text); done.append("Zen draws its own menus")
+    print("Updated: " + ", ".join(done) + ". Open Zen again: the new versions load as it starts.", flush=True)
 
 
 if __name__ == "__main__":

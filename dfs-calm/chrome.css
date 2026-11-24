@@ -268,3 +268,39 @@
     display: none !important;
   }
 }
+
+/* ---------- Menus ---------- */
+
+/* Shorter right-click menus (1.7, Rim 25 Nov: "Why do I right click to close tab? ... I could have just clicked close
+   tab"). The tab menu opens with Close Tab, then what you do with a tab: a new tab below it, a folder, split view,
+   Essentials, its name and icon, pin, duplicate. The space menu keeps its name, icon, theme, the list of spaces and
+   create/delete. What goes: things a shortcut covers (reload Cmd R, reopen Cmd Shift T, bookmark Cmd D), things almost
+   nobody uses from here (share, send to mobile, containers, routing, AI, select all, unload) and Zen's multi-tab
+   extras. New folders live on the + at the bottom of the sidebar and on a right-click in its empty space.
+   On a Mac this needs Zen to draw its own menus: the Mac's native menus ignore every stylesheet (Firefox's
+   nsMenuUtilsX only reads the hidden attribute), so widget.macos.native-context-menus must be false in about:config.
+   With it true nothing here applies and the menus stay as they were. */
+@media (-moz-pref("mod.dfs-calm.short-menus")) {
+  #tabContextMenu :is(
+    #context_reloadTab, #context_reloadSelectedTabs, #context_toggleMuteTab, #context_toggleMuteSelectedTabs,
+    #context_unloadTab, #context_duplicateTabs, #context_askChat, #context_askChatSummarize, #context_createAITab,
+    #context_bookmarkTab, #context_bookmarkSelectedTabs, #context_moveTabOptions, #context_reopenInContainer,
+    #context_selectAllTabs, #context_shareSelectedTabs, #context_sendTabToDevice, #context_closeDuplicateTabs,
+    #context_closeTabOptions, #context_undoCloseTab, #context_zen-add-domain-to-routing, .share-tab-url-item),
+  #tabContextMenu > menuseparator {
+    display: none !important;
+  }
+  /* Close Tab first, set apart by a line. */
+  #tabContextMenu > #context_closeTab {
+    order: -1 !important;
+    margin-bottom: 4px !important;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent) !important;
+    padding-bottom: 4px !important;
+  }
+  #zenWorkspaceMoreActions :is(
+    #context_zenWorkspacesOpenInContainerTab, #context_zenManageWorkspaces, #context_zenUnloadWorkspace,
+    #context_zenUnloadAllOtherWorkspace, #context_zenShareWorkspace, #context_zenSpaceRoutingSettings),
+  #zenWorkspaceMoreActions :is(#context_zenUnloadAllOtherWorkspace, #context_zenDeleteWorkspace) + menuseparator {
+    display: none !important;
+  }
+}
