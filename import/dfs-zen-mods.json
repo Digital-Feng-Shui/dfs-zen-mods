@@ -8,7 +8,7 @@
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-calm/image.png",
     "tags": [
       "calm",
@@ -52,5 +52,24 @@
     ],
     "createdAt": "2026-11-02",
     "updatedAt": "2026-11-14"
+  },
+  "6d6f6473-6466-7320-6d65-6e7530303031": {
+    "id": "6d6f6473-6466-7320-6d65-6e7530303031",
+    "name": "DFS Minimal Menus",
+    "description": "Right-click menus with only what you can't do another way: folder, label, icon, close.",
+    "homepage": "https://github.com/Digital-Feng-Shui/dfs-zen-mods/tree/main/dfs-minimal-menus",
+    "style": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/readme.md",
+    "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/preferences.json",
+    "author": "Digital Feng Shui",
+    "version": "1.0.0",
+    "defaultEnabled": false,
+    "image": "",
+    "tags": [
+      "menus",
+      "calm"
+    ],
+    "createdAt": "2026-11-25",
+    "updatedAt": "2026-11-25"
   }
 }

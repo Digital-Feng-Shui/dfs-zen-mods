@@ -12,7 +12,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 WORK = REPO.parent  # DFS/browser, the working folders
-MODS = ["dfs-calm", "dfs-quiet", "dfs-nav-panel"]
+MODS = ["dfs-calm", "dfs-quiet", "dfs-nav-panel", "dfs-minimal-menus"]
 
 
 # ---------- static ----------
@@ -79,7 +79,7 @@ return (async () => {
   const resetAll = async () => { for (const [p, v] of Object.entries(DEFAULTS)) typeof v === "boolean" ? prefs.setBoolPref(p, v) : prefs.setStringPref(p, v); tick(); await wait(600); tick(); };
   const DEFAULTS = { "mod.dfs-calm.selected-tab": "edge", "mod.dfs-calm.ghost-tabs": "grey", "mod.dfs-calm.tab-text": "12",
     "mod.dfs-calm.space-heading": true, "mod.dfs-calm.faint-buttons": true, "mod.dfs-calm.hide-link-preview": true,
-    "mod.dfs-calm.tidy-rows": true, "mod.dfs-calm.short-menus": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
+    "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
     "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true };
   await resetAll();
 
@@ -159,7 +159,7 @@ return (async () => {
   ok("Calm setting: link preview back", cs($("#statuspanel"))?.display !== "none", cs($("#statuspanel"))?.display);
   await resetAll();
 
-  // Calm: shorter right-click menus (needs Zen-drawn menus on a Mac; the check switches them on for itself)
+  // DFS Minimal Menus (needs Zen-drawn menus on a Mac; the check switches them on for itself)
   const nativeWas = prefs.getBoolPref("widget.macos.native-context-menus", true);
   prefs.setBoolPref("widget.macos.native-context-menus", false); tick();
   const tabMenu = $("#tabContextMenu"), st = gBrowser.selectedTab.getBoundingClientRect();
@@ -168,7 +168,7 @@ return (async () => {
   const menuItems = [...tabMenu.children].filter(c => cs(c).display !== "none" && !c.hidden && c.getBoundingClientRect().height > 0).sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).map(c => c.label);
   tabMenu.hidePopup(); await wait(300);
   prefs.setBoolPref("widget.macos.native-context-menus", nativeWas);
-  ok("Calm: tab menu starts with Close Tab, short", menuItems[0] === "Close Tab" && menuItems.length <= 12, `${menuItems.length} items: ${menuItems.join(", ")}`);
+  ok("Minimal Menus: tab menu is Move to Folder, Change Label, Change Icon, Close Tab", JSON.stringify(menuItems.map(l => l.replace(/[.\u2026]+$/, ""))) === JSON.stringify(["Move to Folder", "Change Label", "Change Icon", "Close Tab"]), `${menuItems.length} items: ${menuItems.join(", ")}`);
 
   // 3. DFS Quiet
   for (const id of ["back-button", "forward-button", "stop-reload-button", "reload-button"]) {

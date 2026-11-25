@@ -5,7 +5,7 @@ await (async () => {
   const mods = await gZenMods.getMods();
   for (const [id, mod] of Object.entries(ours)) {
     if (mods[id]) await gZenMods.removeMod(id, false); // an older copy goes, so Zen fetches the latest
-    mods[id] = { ...mod, enabled: mods[id]?.enabled ?? true };
+    mods[id] = { ...mod, enabled: mods[id]?.enabled ?? (mod.defaultEnabled ?? true) }; // Minimal Menus arrives off
   }
   await gZenMods.updateMods(mods); // Zen downloads each mod from its GitHub links and turns it on
   return "Installed: " + Object.values(ours).map((m) => `${m.name} ${m.version}`).join(", ");

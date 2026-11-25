@@ -2,6 +2,7 @@
 
   python3 -I design/update-my-zen.py "<profile folder>"          waits until Zen is closed, then updates
   python3 -I design/update-my-zen.py "<profile folder>" --now    profile must already be closed (no waiting)
+  ... --add <mod folder>   also puts in a mod that isn't there yet, switched on (e.g. --add dfs-minimal-menus)
   ... --zen-menus   also lets Zen draw its own right-click menus (widget.macos.native-context-menus false), which
                     DFS Calm's "Shorter right-click menus" needs on a Mac
 
@@ -40,26 +41,43 @@ def build_stylesheet(profile: Path, mods: dict) -> str:
     return out + "\n"
 
 
-def update(profile: Path):
+def set_missing_defaults(profile: Path, folders):
+    """Zen gives a mod's settings their defaults only when it rebuilds the styles itself; this updater rebuilds them,
+    so it writes the defaults of settings that aren't in prefs.js yet (a new setting stayed off otherwise, 25 Nov)."""
+    prefs = profile / "prefs.js"; text = prefs.read_text(); added = []
+    for folder in folders:
+        for p in json.loads((REPO / folder / "preferences.json").read_text()):
+            name = p["property"]
+            if f'"{name}"' in text or "defaultValue" not in p: continue
+            v = p["defaultValue"]
+            text = text.rstrip("\n") + "\n" + f'user_pref("{name}", {json.dumps(v if isinstance(v, bool) else str(v))});' + "\n"
+            added.append(name)
+    if added:
+        shutil.copy(prefs, prefs.with_name(prefs.name + ".before-dfs-update")); prefs.write_text(text)
+    return added
+
+
+def update(profile: Path, add=()):
     entries = json.loads((REPO / "import/dfs-zen-mods.json").read_text())
     reg = profile / "zen-themes.json"
     current = json.loads(reg.read_text()) if reg.exists() else {}
     shutil.copy(reg, reg.with_name(reg.name + ".before-dfs-update"))
-    done = []
+    done, folders = [], []
     for mod_id, entry in entries.items():
-        if mod_id not in current:
-            continue  # only update what is there; adding is install.js's or Tinko's job
         folder = entry["homepage"].rsplit("/", 1)[1]
+        if mod_id not in current and folder not in add:
+            continue  # only update what is there, plus what --add names (switched on)
         dest = profile / "chrome/zen-themes" / mod_id
         dest.mkdir(parents=True, exist_ok=True)
         for f in ("chrome.css", "preferences.json", "readme.md"):
             shutil.copy(REPO / folder / f, dest / f)
-        current[mod_id] = {**entry, "enabled": current[mod_id].get("enabled", True)}
-        done.append(f"{entry['name']} {entry['version']}")
+        current[mod_id] = {**entry, "enabled": current.get(mod_id, {}).get("enabled", True)}
+        done.append(f"{entry['name']} {entry['version']}"); folders.append(folder)
     reg.write_text(json.dumps(current, indent=2))
     css = profile / "chrome/zen-themes.css"
     if css.exists(): shutil.copy(css, css.with_name(css.name + ".before-dfs-update"))
     css.write_text(build_stylesheet(profile, current))
+    set_missing_defaults(profile, folders)
     return done
 
 
@@ -71,7 +89,8 @@ def main():
         print("Waiting for Zen to close (Cmd Q in Zen)…", flush=True)
         while zen_running_with(profile): time.sleep(1)
         time.sleep(2)  # Zen writes its files on the way out
-    done = update(profile)
+    add = [sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--add"]  # --add dfs-minimal-menus
+    done = update(profile, add)
     if "--zen-menus" in sys.argv:
         prefs = profile / "prefs.js"; text = prefs.read_text()
         shutil.copy(prefs, prefs.with_name(prefs.name + ".before-dfs-update"))

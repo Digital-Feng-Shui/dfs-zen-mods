@@ -1,4 +1,4 @@
-# Copies the three DFS Zen mods from their working folders (DFS/browser/dfs-calm, dfs-quiet, dfs-nav-panel) into this
+# Copies the DFS Zen mods from their working folders (DFS/browser/dfs-calm, dfs-quiet, dfs-nav-panel, dfs-minimal-menus) into this
 # public repo, points every mod at its files here (raw.githubusercontent.com), and writes the import files Zen's
 # Settings > Mods > Import reads. Run before each push: python3 -I sync.py
 import json, pathlib, shutil, datetime
@@ -8,7 +8,7 @@ browser = here.parent
 OWNER_REPO = "Digital-Feng-Shui/dfs-zen-mods"
 RAW = f"https://raw.githubusercontent.com/{OWNER_REPO}/main"
 PAGE = f"https://github.com/{OWNER_REPO}/tree/main"
-MODS = ["dfs-calm", "dfs-quiet", "dfs-nav-panel"]   # order = order in the all-in-one import file
+MODS = ["dfs-calm", "dfs-quiet", "dfs-nav-panel", "dfs-minimal-menus"]   # order = order in the all-in-one import file
 FILES = ["chrome.css", "preferences.json", "readme.md"]
 
 today = datetime.date.today().isoformat()
@@ -35,6 +35,7 @@ for folder in MODS:
         if (src / f).exists():
             shutil.copy(src / f, out / f)
     entry = {k: theme[k] for k in ("id", "name", "description", "homepage", "style", "readme", "preferences", "author", "version") if k in theme}
+    if "defaultEnabled" in theme: entry["defaultEnabled"] = theme["defaultEnabled"]  # ours: arrives switched off (install.js)
     entry.update(image=theme.get("image", ""), tags=theme.get("tags", []), createdAt=theme.get("createdAt", today), updatedAt=theme.get("updatedAt", today))
     (here / "import" / f"{folder}.json").write_text(json.dumps({entry["id"]: entry}, indent=2, ensure_ascii=False) + "\n")
     everything[entry["id"]] = entry

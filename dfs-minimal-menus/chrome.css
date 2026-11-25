@@ -1,0 +1,33 @@
+/* DFS Minimal Menus, a Zen mod: right-click menus with only what you can't do another way.
+   Rim, 25 Nov 2026: "I would right click and it would be like add folder ... change label, change icon ... those are
+   unique ... and the move to [folder] all the way at the top". Everything else has a shortcut (new tab Cmd T, reload
+   Cmd R, reopen Cmd Shift T, bookmark Cmd D), a gesture (drag to pin or into the Essentials, the minus to unload) or is
+   rarely used (share, send to mobile, containers, routing, AI).
+   On a Mac this needs Zen to draw its own menus: macOS draws them by default and ignores every stylesheet (Firefox's
+   nsMenuUtilsX only reads the hidden attribute), so widget.macos.native-context-menus must be false in about:config.
+   With it true nothing here applies and the menus stay as they were. */
+
+/* The tab menu: Move to Folder (with New Folder inside), Change Label, Change Icon, and Close Tab set apart at the
+   bottom. A list of what stays rather than what goes, so items Zen adds later stay out too. The full-screen items
+   only show in full screen. */
+#tabContextMenu > :not(#context_zenMoveToFolder, #context_zen-edit-tab-title, #context_zen-edit-tab-icon,
+                       #context_closeTab, #context_fullscreenAutohide, #context_fullscreenExit) {
+  display: none !important;
+}
+#tabContextMenu > #context_zenMoveToFolder {
+  order: -1 !important;
+}
+#tabContextMenu > #context_closeTab {
+  order: 1 !important;
+  margin-top: 4px !important;
+  padding-top: 4px !important;
+  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent) !important;
+}
+
+/* The space menu: its name, icon and theme, your spaces, and create or delete a space. */
+#zenWorkspaceMoreActions :is(
+  #context_zenWorkspacesOpenInContainerTab, #context_zenManageWorkspaces, #context_zenUnloadWorkspace,
+  #context_zenUnloadAllOtherWorkspace, #context_zenShareWorkspace, #context_zenSpaceRoutingSettings),
+#zenWorkspaceMoreActions :is(#context_zenUnloadAllOtherWorkspace, #context_zenDeleteWorkspace) + menuseparator {
+  display: none !important;
+}
