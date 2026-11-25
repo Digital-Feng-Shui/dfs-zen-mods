@@ -56,13 +56,13 @@
   "6d6f6473-6466-7320-6d65-6e7530303031": {
     "id": "6d6f6473-6466-7320-6d65-6e7530303031",
     "name": "DFS Minimal Menus",
-    "description": "Right-click menus with only what you can't do another way: move to folder, name, icon.",
+    "description": "Right-click menus with only what you can't do another way: move to space or folder, name, icon.",
     "homepage": "https://github.com/Digital-Feng-Shui/dfs-zen-mods/tree/main/dfs-minimal-menus",
     "style": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/chrome.css",
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-minimal-menus/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "defaultEnabled": false,
     "image": "",
     "tags": [

@@ -8,12 +8,31 @@
    widget.macos.native-context-menus (right-click menus) and widget.macos.native-anchored-menus (menus that open from
    a button, like the ... on a space). With them true nothing here applies and the menus stay as they were. */
 
-/* ---------- The tab menu: Move to Folder (with New Folder inside), Change Name, Change Icon ---------- */
+/* ---------- The tab menu: Move to Space, Move to Folder (with New Folder inside), Change Name, Change Icon ---------- */
 /* A list of what stays rather than what goes, so items Zen adds later stay out too. The full-screen items only show
    in full screen. */
-#tabContextMenu > :not(#context_zenMoveToFolder, #context_zen-edit-tab-title, #context_zen-edit-tab-icon,
-                       #context_fullscreenAutohide, #context_fullscreenExit) {
+#tabContextMenu > :not(#context_moveTabOptions, #context_zenMoveToFolder, #context_zen-edit-tab-title,
+                       #context_zen-edit-tab-icon, #context_fullscreenAutohide, #context_fullscreenExit) {
   display: none !important;
+}
+/* Move to Space (1.2, Rim: "the number one thing ... I have a tab here in DFS and I want to move it to the Rimbo
+   space"). Zen keeps it inside Firefox's "Move Tab" submenu, above Move to Start, Move to End and Move to New Window
+   (zen-browser/desktop #12168). It goes first, named for what it does, with only the spaces inside. */
+#tabContextMenu > #context_moveTabOptions {
+  order: -2;
+}
+#context_moveTabOptions > :is(.menu-text, .menu-highlightable-text) {
+  display: none !important;
+}
+#context_moveTabOptions::before {
+  content: "Move to Space";
+  flex: 1;
+}
+#context_moveTabOptions menupopup > :not(menuitem.zen-workspace-context-menu-item) {
+  display: none !important;
+}
+#tabContextMenu > #context_zenMoveToFolder {
+  order: -1;
 }
 /* "Change Label" reads "Change Name" (Rim: "I would call that then change name"). */
 #context_zen-edit-tab-title > :is(.menu-text, .menu-highlightable-text, .menu-accel) {

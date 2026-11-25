@@ -162,13 +162,16 @@ return (async () => {
   // DFS Minimal Menus (needs Zen-drawn menus on a Mac; the check switches them on for itself)
   const nativeWas = [prefs.getBoolPref("widget.macos.native-context-menus", true), prefs.getBoolPref("widget.macos.native-anchored-menus", true)];
   prefs.setBoolPref("widget.macos.native-context-menus", false); prefs.setBoolPref("widget.macos.native-anchored-menus", false); tick();
-  const itemName = c => { const a = cs(c, "::after").content; return /^".+"$/.test(a || "") ? a.slice(1, -1) : (c.getAttribute("label") || c.label || c.id); };
+  const itemName = c => { for (const p of ["::before", "::after"]) { const a = cs(c, p).content; if (/^"[^"]{3,}"$/.test(a || "")) return a.slice(1, -1); } return c.getAttribute("label") || c.label || c.id; };
   const shownIn = m => [...m.children].filter(c => cs(c).display !== "none" && !c.hidden && c.getBoundingClientRect().height > 0).sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).filter(c => c.localName !== "menuseparator").map(c => itemName(c).replace(/[.…]+$/, ""));
   const tabMenu = $("#tabContextMenu"), st = gBrowser.selectedTab.getBoundingClientRect();
   gBrowser.selectedTab.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: st.x + 20, clientY: st.y + 10, screenX: mozInnerScreenX + st.x + 20, screenY: mozInnerScreenY + st.y + 10 }));
   await wait(700); tick(); await wait(200); tick();
   const menuItems = shownIn(tabMenu); tabMenu.hidePopup(); await wait(300);
-  ok("Minimal Menus: tab menu is Move to Folder, Change Name, Change Icon", JSON.stringify(menuItems) === JSON.stringify(["Move to Folder", "Change Name", "Change Icon"]), menuItems.join(", "));
+  ok("Minimal Menus: tab menu is Move to Space, Move to Folder, Change Name, Change Icon", JSON.stringify(menuItems) === JSON.stringify(["Move to Space", "Move to Folder", "Change Name", "Change Icon"]), menuItems.join(", "));
+  const moveSub = $("#context_moveTabOptions")?.menupopup;
+  const subShown = moveSub ? [...moveSub.children].filter(c => !c.hidden && cs(c).display !== "none") : [];
+  ok("Minimal Menus: Move to Space holds only spaces", subShown.every(c => c.classList.contains("zen-workspace-context-menu-item") && c.localName === "menuitem"), subShown.map(c => c.label).join(", ") || "(no other space in the demo)");
   const spaceMenu = $("#zenWorkspaceMoreActions");
   spaceMenu.openPopup($(".zen-workspaces-actions"), "after_start", 0, 0, false, false, null); await wait(700); tick(); await wait(200); tick();
   const spaceItems = shownIn(spaceMenu); spaceMenu.hidePopup(); await wait(300);
