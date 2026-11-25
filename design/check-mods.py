@@ -170,8 +170,9 @@ return (async () => {
   const menuItems = shownIn(tabMenu); tabMenu.hidePopup(); await wait(300);
   ok("Minimal Menus: tab menu is Move to Space, Move to Folder, Change Name, Change Icon", JSON.stringify(menuItems) === JSON.stringify(["Move to Space", "Move to Folder", "Change Name", "Change Icon"]), menuItems.join(", "));
   const moveSub = $("#context_moveTabOptions")?.menupopup;
+  const subStyled = moveSub && [...moveSub.children].some(c => cs(c).display !== "");  // a submenu never opened has no styles yet
   const subShown = moveSub ? [...moveSub.children].filter(c => !c.hidden && cs(c).display !== "none") : [];
-  ok("Minimal Menus: Move to Space holds only spaces", subShown.every(c => c.classList.contains("zen-workspace-context-menu-item") && c.localName === "menuitem"), subShown.map(c => c.label).join(", ") || "(no other space in the demo)");
+  ok("Minimal Menus: Move to Space holds only spaces", subStyled ? subShown.every(c => c.classList.contains("zen-workspace-context-menu-item") && c.localName === "menuitem") : null, subStyled ? (subShown.map(c => c.label).join(", ") || "(no other space in the demo)") : "submenu not opened in this run, can't tell");
   const spaceMenu = $("#zenWorkspaceMoreActions");
   spaceMenu.openPopup($(".zen-workspaces-actions"), "after_start", 0, 0, false, false, null); await wait(700); tick(); await wait(200); tick();
   const spaceItems = shownIn(spaceMenu); spaceMenu.hidePopup(); await wait(300);
