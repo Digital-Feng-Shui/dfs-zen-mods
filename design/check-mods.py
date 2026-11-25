@@ -168,7 +168,7 @@ return (async () => {
   gBrowser.selectedTab.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: st.x + 20, clientY: st.y + 10, screenX: mozInnerScreenX + st.x + 20, screenY: mozInnerScreenY + st.y + 10 }));
   await wait(700); tick(); await wait(200); tick();
   const menuItems = shownIn(tabMenu); tabMenu.hidePopup(); await wait(300);
-  ok("Minimal Menus: tab menu is Move to Space, Move to Folder, Change Name, Change Icon", JSON.stringify(menuItems) === JSON.stringify(["Move to Space", "Move to Folder", "Change Name", "Change Icon"]), menuItems.join(", "));
+  ok("Minimal Menus: tab menu is Move to Space, Move to Folder, Change Name, Change Icon, Mute Tab", JSON.stringify(menuItems) === JSON.stringify(["Move to Space", "Move to Folder", "Change Name", "Change Icon", "Mute Tab"]), menuItems.join(", "));
   const moveSub = $("#context_moveTabOptions")?.menupopup;
   const subStyled = moveSub && [...moveSub.children].some(c => cs(c).display !== "");  // a submenu never opened has no styles yet
   const subShown = moveSub ? [...moveSub.children].filter(c => !c.hidden && cs(c).display !== "none") : [];

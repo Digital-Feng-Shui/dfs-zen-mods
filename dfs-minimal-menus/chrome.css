@@ -8,12 +8,25 @@
    widget.macos.native-context-menus (right-click menus) and widget.macos.native-anchored-menus (menus that open from
    a button, like the ... on a space). With them true nothing here applies and the menus stay as they were. */
 
-/* ---------- The tab menu: Move to Space, Move to Folder (with New Folder inside), Change Name, Change Icon ---------- */
+/* ---------- The tab menu: Move to Space, Move to Folder (with New Folder inside), Change Name, Change Icon, Mute Tab ---------- */
 /* A list of what stays rather than what goes, so items Zen adds later stay out too. The full-screen items only show
    in full screen. */
 #tabContextMenu > :not(#context_moveTabOptions, #context_zenMoveToFolder, #context_zen-edit-tab-title,
-                       #context_zen-edit-tab-icon, #context_fullscreenAutohide, #context_fullscreenExit) {
+                       #context_zen-edit-tab-icon, #context_toggleMuteTab, #context_toggleMuteSelectedTabs,
+                       #context_fullscreenAutohide, #context_fullscreenExit) {
   display: none !important;
+}
+/* Mute Tab stays, last (1.4, Rim: "a hotkey I currently always forget and I don't assume people to know"); the menu
+   shows its shortcut (Ctrl M) beside it, so it teaches the key. Zen swaps it for Mute Tabs when several are selected. */
+#tabContextMenu > :is(#context_toggleMuteTab, #context_toggleMuteSelectedTabs) {
+  order: 1;
+}
+/* Firefox links no key to this item, so the hint is drawn here: Ctrl M (key_toggleMute, modifiers control). */
+#tabContextMenu > :is(#context_toggleMuteTab, #context_toggleMuteSelectedTabs)::after {
+  content: "\2303 M";
+  margin-inline-start: auto;
+  padding-inline-start: 24px;
+  opacity: 0.55;
 }
 /* Move to Space (1.2, Rim: "the number one thing ... I have a tab here in DFS and I want to move it to the Rimbo
    space"). Zen keeps it inside Firefox's "Move Tab" submenu, above Move to Start, Move to End and Move to New Window
@@ -47,7 +60,7 @@
 @media (-moz-pref("mod.dfs-menus.close-tab")) {
   #tabContextMenu > #context_closeTab:not([hidden]) {
     display: flex !important;
-    order: 1;
+    order: 2;
     margin-top: 4px;
     padding-top: 4px;
     border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
