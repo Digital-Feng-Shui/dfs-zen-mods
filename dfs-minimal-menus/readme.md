@@ -3,14 +3,16 @@
 Right-click menus with only what you can't do another way.
 
 - **Tab menu:** Move to Space (your other spaces), Move to Folder (New Folder inside it puts this tab in a new folder), Change Name, Change Icon.
-- **Space menu** (right-click a space or its ⋯ button): name, icon, theme, profile, Manage Spaces, create, share, delete and routing. The list of spaces goes (swipe, or use the icons at the bottom) and so does unloading.
-- **Empty sidebar space:** New Folder on top, then Live Folder, Theme and Set Profile.
+- **Space menu** (right-click a space or its ⋯ button): name, icon, theme, Manage Spaces, create, share, delete and routing. The list of spaces goes (swipe, or use the icons at the bottom) and so does unloading.
+- **Empty sidebar space:** New Folder and Theme.
 
 Everything else has a shortcut (new tab ⌘T, reload ⌘R, reopen a closed tab ⌘⇧T, bookmark ⌘D, compact mode ⌘S) or a gesture: drag a tab to pin it or into the Essentials.
 
 ## Settings
 - **Close Tab in the tab menu** (off by default): adds Close Tab at the bottom.
 - **New Tab in the sidebar menu** (off by default).
+- **Live Folder in the sidebar menu** (off by default): a folder that fills itself from an RSS feed or from GitHub pull requests and issues.
+- **Set Profile in the sidebar and space menus** (off by default): gives a space its own logins, handy for client work.
 
 ## On a Mac
 macOS draws Zen's menus by default and no mod can change those. Open `about:config` and set both to **false**:
@@ -19,4 +21,4 @@ macOS draws Zen's menus by default and no mod can change those. Open `about:conf
 
 Don't like it? Switch the mod off and Zen's full menus are back.
 
-By Digital Feng Shui. v1.2.1, 25 Nov 2026.
+By Digital Feng Shui. v1.3.0, 25 Nov 2026.

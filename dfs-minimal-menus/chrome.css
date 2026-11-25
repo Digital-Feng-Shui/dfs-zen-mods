@@ -58,19 +58,21 @@
 /* Keeps name, icon, theme, profile, Manage Spaces, create, share, delete and routing. The list of spaces goes (switch
    by swiping or with the icons at the bottom), and so does unloading. */
 #zenWorkspaceMoreActions > :is(.zen-workspace-context-menu-item, #context_zenWorkspacesSeparator,
-                               #context_zenUnloadWorkspace, #context_zenUnloadAllOtherWorkspace) {
+                               #context_zenUnloadWorkspace, #context_zenUnloadAllOtherWorkspace,
+                               #context_zenWorkspacesOpenInContainerTab) {
   display: none !important;
 }
 
 /* ---------- Right-click on empty sidebar space ---------- */
-/* New Folder on top, then Live Folder, Theme and Set Profile. Compact mode (Cmd S, or the sidebar button), New Tab
+/* New Folder on top, then Theme. Compact mode (Cmd S, or the sidebar button), New Tab
    (the + and Cmd T), and the tab items (reload, bookmark, select all, reopen) go. The extension items this menu shows
    on an extension's button stay. */
 #toolbar-context-menu > :is(#zen-context-menu-compact-mode-toggle, #zen-context-menu-compact-mode,
                             #toolbar-context-openANewTab, #toolbar-context-reloadSelectedTab,
                             #toolbar-context-reloadSelectedTabs, #toolbar-context-bookmarkSelectedTab,
                             #toolbar-context-bookmarkSelectedTabs, #toolbar-context-selectAllTabs,
-                            #toolbar-context-undoCloseTab, #zen-toolbar-context-tabs-right) {
+                            #toolbar-context-undoCloseTab, #zen-toolbar-context-tabs-right,
+                            #zen-panel-ui-live-folder-create, #zen-toolbar-context-set-profile) {
   display: none !important;
 }
 #toolbar-context-menu > #zen-context-menu-new-folder-toolbar { order: -3; }
@@ -80,4 +82,14 @@
 #toolbar-context-menu > menuseparator:not(#zen-panel-ui-live-folder-create + menuseparator) { display: none !important; }
 @media (-moz-pref("mod.dfs-menus.new-tab")) {
   #toolbar-context-menu > #toolbar-context-openANewTab:not([hidden]) { display: flex !important; order: -4; }
+}
+
+/* Settings (all off by default, Rim 25 Nov: "what if someone likes the minimal menus but needs something?"):
+   Live Folder in the sidebar menu, and Set Profile (a space's own logins) in the sidebar and space menus. */
+@media (-moz-pref("mod.dfs-menus.live-folder")) {
+  #toolbar-context-menu > #zen-panel-ui-live-folder-create:not([hidden]) { display: flex !important; }
+}
+@media (-moz-pref("mod.dfs-menus.profile")) {
+  #toolbar-context-menu > #zen-toolbar-context-set-profile:not([hidden]),
+  #zenWorkspaceMoreActions > #context_zenWorkspacesOpenInContainerTab:not([hidden]) { display: flex !important; }
 }

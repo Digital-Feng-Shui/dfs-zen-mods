@@ -80,7 +80,7 @@ return (async () => {
   const DEFAULTS = { "mod.dfs-calm.selected-tab": "edge", "mod.dfs-calm.ghost-tabs": "grey", "mod.dfs-calm.tab-text": "12",
     "mod.dfs-calm.space-heading": true, "mod.dfs-calm.faint-buttons": true, "mod.dfs-calm.hide-link-preview": true,
     "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
-    "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true, "mod.dfs-menus.close-tab": false, "mod.dfs-menus.new-tab": false };
+    "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true, "mod.dfs-menus.close-tab": false, "mod.dfs-menus.new-tab": false, "mod.dfs-menus.live-folder": false, "mod.dfs-menus.profile": false };
   await resetAll();
 
   // 1. Each mod's CSS parsed on its own: parse errors, and rules whose selector matches nothing right now.
@@ -176,7 +176,21 @@ return (async () => {
   const spaceMenu = $("#zenWorkspaceMoreActions");
   spaceMenu.openPopup($(".zen-workspaces-actions"), "after_start", 0, 0, false, false, null); await wait(700); tick(); await wait(200); tick();
   const spaceItems = shownIn(spaceMenu); spaceMenu.hidePopup(); await wait(300);
-  ok("Minimal Menus: space menu without the spaces list and unloading", !spaceItems.some(n => /Unload|Studio/.test(n)) && spaceItems.includes("Manage Spaces") && spaceItems.includes("Create Space"), spaceItems.join(", "));
+  ok("Minimal Menus: space menu without the spaces list, unloading and profile", !spaceItems.some(n => /Unload|Studio|Set Profile/.test(n)) && spaceItems.includes("Manage Spaces") && spaceItems.includes("Create Space"), spaceItems.join(", "));
+  // the empty-sidebar menu, read by style (its items have no size in the hidden demo window), with and without its settings
+  const sideItems = async () => {
+    const area = $(".zen-workspace-empty-space"), ar = area.getBoundingClientRect(), tb = $("#toolbar-context-menu");
+    area.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: ar.x + 30, clientY: ar.y + 10, screenX: mozInnerScreenX + ar.x + 30, screenY: mozInnerScreenY + ar.y + 10 }));
+    await wait(700); tick(); await wait(200); tick();
+    const items = [...tb.children].map((c, i) => [i, c, parseInt(cs(c).order) || 0]).filter(([, c]) => !c.hidden && cs(c).display !== "none").sort((a, b) => a[2] - b[2] || a[0] - b[0]).map(([, c]) => c.localName === "menuseparator" ? "---" : itemName(c).replace(/[.…]+$/, ""));
+    tb.hidePopup(); await wait(300); return items;
+  };
+  const side = await sideItems();
+  ok("Minimal Menus: sidebar menu is New Folder, a line, Theme", JSON.stringify(side) === JSON.stringify(["New Folder", "---", "Theme"]), side.join(", "));
+  await setPref("mod.dfs-menus.live-folder", true); await setPref("mod.dfs-menus.profile", true);
+  const sideOn = await sideItems();
+  ok("Minimal Menus settings: Live Folder and Set Profile come back", sideOn.includes("Live Folder") && sideOn.includes("Set Profile"), sideOn.join(", "));
+  await setPref("mod.dfs-menus.live-folder", false); await setPref("mod.dfs-menus.profile", false);
   prefs.setBoolPref("widget.macos.native-context-menus", nativeWas[0]); prefs.setBoolPref("widget.macos.native-anchored-menus", nativeWas[1]);
 
   // 3. DFS Quiet

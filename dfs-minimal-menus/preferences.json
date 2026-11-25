@@ -10,5 +10,17 @@
     "label": "New Tab in the sidebar menu",
     "type": "checkbox",
     "defaultValue": false
+  },
+  {
+    "property": "mod.dfs-menus.live-folder",
+    "label": "Live Folder in the sidebar menu",
+    "type": "checkbox",
+    "defaultValue": false
+  },
+  {
+    "property": "mod.dfs-menus.profile",
+    "label": "Set Profile in the sidebar and space menus",
+    "type": "checkbox",
+    "defaultValue": false
   }
 ]
