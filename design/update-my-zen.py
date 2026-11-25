@@ -3,7 +3,7 @@
   python3 -I design/update-my-zen.py "<profile folder>"          waits until Zen is closed, then updates
   python3 -I design/update-my-zen.py "<profile folder>" --now    profile must already be closed (no waiting)
   ... --add <mod folder>   also puts in a mod that isn't there yet, switched on (e.g. --add dfs-minimal-menus)
-  ... --zen-menus   also lets Zen draw its own right-click menus (widget.macos.native-context-menus false), which
+  ... --zen-menus   also lets Zen draw its own menus (widget.macos.native-context-menus and native-anchored-menus false), which
                     DFS Calm's "Shorter right-click menus" needs on a Mac
 
 What it does, with Zen closed (Zen keeps its mod list in memory and writes it back when it quits):
@@ -94,8 +94,9 @@ def main():
     if "--zen-menus" in sys.argv:
         prefs = profile / "prefs.js"; text = prefs.read_text()
         shutil.copy(prefs, prefs.with_name(prefs.name + ".before-dfs-update"))
-        line = 'user_pref("widget.macos.native-context-menus", false);'
-        text = re.sub(r'user_pref\("widget\.macos\.native-context-menus", (true|false)\);', line, text) if "native-context-menus" in text else text.rstrip("\n") + "\n" + line + "\n"
+        for name in ("widget.macos.native-context-menus", "widget.macos.native-anchored-menus"):  # right-click and button menus
+            line = f'user_pref("{name}", false);'
+            text = re.sub(r'user_pref\("' + re.escape(name) + r'", (true|false)\);', line, text) if f'"{name}"' in text else text.rstrip("\n") + "\n" + line + "\n"
         prefs.write_text(text); done.append("Zen draws its own menus")
     if zen_running_with(profile):  # Zen was opened again while we wrote (25 Nov: reopened in the same second)
         subprocess.run(["osascript", "-e", 'display dialog "Zen opened too early. Quit Zen once more and run the update again." with title "Zen mods" buttons {"OK"} default button 1 giving up after 120'])

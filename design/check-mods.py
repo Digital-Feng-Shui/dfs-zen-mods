@@ -80,7 +80,7 @@ return (async () => {
   const DEFAULTS = { "mod.dfs-calm.selected-tab": "edge", "mod.dfs-calm.ghost-tabs": "grey", "mod.dfs-calm.tab-text": "12",
     "mod.dfs-calm.space-heading": true, "mod.dfs-calm.faint-buttons": true, "mod.dfs-calm.hide-link-preview": true,
     "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
-    "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true };
+    "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true, "mod.dfs-menus.close-tab": false, "mod.dfs-menus.new-tab": false };
   await resetAll();
 
   // 1. Each mod's CSS parsed on its own: parse errors, and rules whose selector matches nothing right now.
@@ -160,15 +160,20 @@ return (async () => {
   await resetAll();
 
   // DFS Minimal Menus (needs Zen-drawn menus on a Mac; the check switches them on for itself)
-  const nativeWas = prefs.getBoolPref("widget.macos.native-context-menus", true);
-  prefs.setBoolPref("widget.macos.native-context-menus", false); tick();
+  const nativeWas = [prefs.getBoolPref("widget.macos.native-context-menus", true), prefs.getBoolPref("widget.macos.native-anchored-menus", true)];
+  prefs.setBoolPref("widget.macos.native-context-menus", false); prefs.setBoolPref("widget.macos.native-anchored-menus", false); tick();
+  const itemName = c => { const a = cs(c, "::after").content; return /^".+"$/.test(a || "") ? a.slice(1, -1) : (c.getAttribute("label") || c.label || c.id); };
+  const shownIn = m => [...m.children].filter(c => cs(c).display !== "none" && !c.hidden && c.getBoundingClientRect().height > 0).sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).filter(c => c.localName !== "menuseparator").map(c => itemName(c).replace(/[.…]+$/, ""));
   const tabMenu = $("#tabContextMenu"), st = gBrowser.selectedTab.getBoundingClientRect();
   gBrowser.selectedTab.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, button: 2, clientX: st.x + 20, clientY: st.y + 10, screenX: mozInnerScreenX + st.x + 20, screenY: mozInnerScreenY + st.y + 10 }));
   await wait(700); tick(); await wait(200); tick();
-  const menuItems = [...tabMenu.children].filter(c => cs(c).display !== "none" && !c.hidden && c.getBoundingClientRect().height > 0).sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y).map(c => c.label);
-  tabMenu.hidePopup(); await wait(300);
-  prefs.setBoolPref("widget.macos.native-context-menus", nativeWas);
-  ok("Minimal Menus: tab menu is Move to Folder, Change Label, Change Icon, Close Tab", JSON.stringify(menuItems.map(l => l.replace(/[.\u2026]+$/, ""))) === JSON.stringify(["Move to Folder", "Change Label", "Change Icon", "Close Tab"]), `${menuItems.length} items: ${menuItems.join(", ")}`);
+  const menuItems = shownIn(tabMenu); tabMenu.hidePopup(); await wait(300);
+  ok("Minimal Menus: tab menu is Move to Folder, Change Name, Change Icon", JSON.stringify(menuItems) === JSON.stringify(["Move to Folder", "Change Name", "Change Icon"]), menuItems.join(", "));
+  const spaceMenu = $("#zenWorkspaceMoreActions");
+  spaceMenu.openPopup($(".zen-workspaces-actions"), "after_start", 0, 0, false, false, null); await wait(700); tick(); await wait(200); tick();
+  const spaceItems = shownIn(spaceMenu); spaceMenu.hidePopup(); await wait(300);
+  ok("Minimal Menus: space menu without the spaces list and unloading", !spaceItems.some(n => /Unload|Studio/.test(n)) && spaceItems.includes("Manage Spaces") && spaceItems.includes("Create Space"), spaceItems.join(", "));
+  prefs.setBoolPref("widget.macos.native-context-menus", nativeWas[0]); prefs.setBoolPref("widget.macos.native-anchored-menus", nativeWas[1]);
 
   // 3. DFS Quiet
   for (const id of ["back-button", "forward-button", "stop-reload-button", "reload-button"]) {

@@ -1,33 +1,63 @@
 /* DFS Minimal Menus, a Zen mod: right-click menus with only what you can't do another way.
-   Rim, 25 Nov 2026: "I would right click and it would be like add folder ... change label, change icon ... those are
-   unique ... and the move to [folder] all the way at the top". Everything else has a shortcut (new tab Cmd T, reload
-   Cmd R, reopen Cmd Shift T, bookmark Cmd D), a gesture (drag to pin or into the Essentials, the minus to unload) or is
-   rarely used (share, send to mobile, containers, routing, AI).
+   Rim, 25 Nov 2026 (second round): the tab menu is "move to" plus name and icon; Close Tab and New Tab are settings for
+   those who want them ("maybe the mod gets settings ... for me, new tab doesn't need to be there"). Everything else has
+   a shortcut (new tab Cmd T, reload Cmd R, reopen Cmd Shift T, bookmark Cmd D, compact mode Cmd S), a gesture (drag to
+   pin, into the Essentials, or onto a space icon to move a tab to that space) or is rarely used.
    On a Mac this needs Zen to draw its own menus: macOS draws them by default and ignores every stylesheet (Firefox's
-   nsMenuUtilsX only reads the hidden attribute), so widget.macos.native-context-menus must be false in about:config.
-   With it true nothing here applies and the menus stay as they were. */
+   nsMenuUtilsX only reads the hidden attribute). Two switches in about:config, both false:
+   widget.macos.native-context-menus (right-click menus) and widget.macos.native-anchored-menus (menus that open from
+   a button, like the ... on a space). With them true nothing here applies and the menus stay as they were. */
 
-/* The tab menu: Move to Folder (with New Folder inside), Change Label, Change Icon, and Close Tab set apart at the
-   bottom. A list of what stays rather than what goes, so items Zen adds later stay out too. The full-screen items
-   only show in full screen. */
+/* ---------- The tab menu: Move to Folder (with New Folder inside), Change Name, Change Icon ---------- */
+/* A list of what stays rather than what goes, so items Zen adds later stay out too. The full-screen items only show
+   in full screen. */
 #tabContextMenu > :not(#context_zenMoveToFolder, #context_zen-edit-tab-title, #context_zen-edit-tab-icon,
-                       #context_closeTab, #context_fullscreenAutohide, #context_fullscreenExit) {
+                       #context_fullscreenAutohide, #context_fullscreenExit) {
   display: none !important;
 }
-#tabContextMenu > #context_zenMoveToFolder {
-  order: -1 !important;
+/* "Change Label" reads "Change Name" (Rim: "I would call that then change name"). */
+#context_zen-edit-tab-title > :is(.menu-text, .menu-highlightable-text, .menu-accel) {
+  display: none !important;
 }
-#tabContextMenu > #context_closeTab {
-  order: 1 !important;
-  margin-top: 4px !important;
-  padding-top: 4px !important;
-  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent) !important;
+#context_zen-edit-tab-title::after {
+  content: "Change Name\2026";
+  flex: 1;
+  margin-inline-start: var(--dfsm-text-start, 0);
+}
+/* Close Tab, for those who want it (a setting, off by default): at the bottom, set apart by a line. */
+@media (-moz-pref("mod.dfs-menus.close-tab")) {
+  #tabContextMenu > #context_closeTab:not([hidden]) {
+    display: flex !important;
+    order: 1;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  }
 }
 
-/* The space menu: its name, icon and theme, your spaces, and create or delete a space. */
-#zenWorkspaceMoreActions :is(
-  #context_zenWorkspacesOpenInContainerTab, #context_zenManageWorkspaces, #context_zenUnloadWorkspace,
-  #context_zenUnloadAllOtherWorkspace, #context_zenShareWorkspace, #context_zenSpaceRoutingSettings),
-#zenWorkspaceMoreActions :is(#context_zenUnloadAllOtherWorkspace, #context_zenDeleteWorkspace) + menuseparator {
+/* ---------- The space menu (right-click a space, or its ... button) ---------- */
+/* Keeps name, icon, theme, profile, Manage Spaces, create, share, delete and routing. The list of spaces goes (switch
+   by swiping or with the icons at the bottom), and so does unloading. */
+#zenWorkspaceMoreActions > :is(.zen-workspace-context-menu-item, #context_zenWorkspacesSeparator,
+                               #context_zenUnloadWorkspace, #context_zenUnloadAllOtherWorkspace) {
   display: none !important;
+}
+
+/* ---------- Right-click on empty sidebar space ---------- */
+/* New Folder on top, then Live Folder, Theme and Set Profile. Compact mode (Cmd S, or the sidebar button), New Tab
+   (the + and Cmd T), and the tab items (reload, bookmark, select all, reopen) go. The extension items this menu shows
+   on an extension's button stay. */
+#toolbar-context-menu > :is(#zen-context-menu-compact-mode-toggle, #zen-context-menu-compact-mode,
+                            #toolbar-context-openANewTab, #toolbar-context-reloadSelectedTab,
+                            #toolbar-context-reloadSelectedTabs, #toolbar-context-bookmarkSelectedTab,
+                            #toolbar-context-bookmarkSelectedTabs, #toolbar-context-selectAllTabs,
+                            #toolbar-context-undoCloseTab, #zen-toolbar-context-tabs-right) {
+  display: none !important;
+}
+#toolbar-context-menu > #zen-context-menu-new-folder-toolbar { order: -3; }
+#toolbar-context-menu > #zen-panel-ui-live-folder-create { order: -2; }
+/* the line under the compact-mode item would now open the menu: it goes, and Theme gets the line instead */
+#toolbar-context-menu > #zen-context-menu-compact-mode + menuseparator { display: none !important; }
+@media (-moz-pref("mod.dfs-menus.new-tab")) {
+  #toolbar-context-menu > #toolbar-context-openANewTab:not([hidden]) { display: flex !important; order: -4; }
 }

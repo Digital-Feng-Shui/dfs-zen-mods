@@ -2,13 +2,21 @@
 
 Right-click menus with only what you can't do another way.
 
-- **Tab menu:** Move to Folder (with New Folder inside), Change Label, Change Icon, and Close Tab at the bottom.
-- **Space menu:** its name, icon and theme, your spaces, and create or delete a space.
+- **Tab menu:** Move to Folder (with New Folder inside), Change Name, Change Icon.
+- **Space menu** (right-click a space or its ⋯ button): name, icon, theme, profile, Manage Spaces, create, share, delete and routing. The list of spaces goes (swipe, or use the icons at the bottom) and so does unloading.
+- **Empty sidebar space:** New Folder on top, then Live Folder, Theme and Set Profile.
 
-Everything else has a shortcut (new tab ⌘T, reload ⌘R, reopen a closed tab ⌘⇧T, bookmark ⌘D), a gesture (drag a tab to pin it or into the Essentials) or is rarely needed. Don't like it? Switch the mod off and Zen's full menus are back.
+Everything else has a shortcut (new tab ⌘T, reload ⌘R, reopen a closed tab ⌘⇧T, bookmark ⌘D, compact mode ⌘S) or a gesture: drag a tab to pin it, into the Essentials, or onto a space's icon to move it there.
 
-**On a Mac:** open `about:config` and set `widget.macos.native-context-menus` to **false**. macOS draws Zen's menus by default and no mod can change those; with this off, Zen draws them itself.
+## Settings
+- **Close Tab in the tab menu** (off by default): adds Close Tab at the bottom.
+- **New Tab in the sidebar menu** (off by default).
 
-New folders: the + at the bottom of the sidebar, or right-click an empty part of the sidebar.
+## On a Mac
+macOS draws Zen's menus by default and no mod can change those. Open `about:config` and set both to **false**:
+- `widget.macos.native-context-menus` (right-click menus)
+- `widget.macos.native-anchored-menus` (menus from a button, like the ⋯ on a space)
 
-By Digital Feng Shui. v1.0.0, 25 Nov 2026.
+Don't like it? Switch the mod off and Zen's full menus are back.
+
+By Digital Feng Shui. v1.1.0, 25 Nov 2026.

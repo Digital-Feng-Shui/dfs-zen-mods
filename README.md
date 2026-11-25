@@ -7,7 +7,7 @@ Four mods for [Zen Browser](https://zen-browser.app), by [Digital Feng Shui](htt
 | [DFS Calm](dfs-calm) | Everyone | A calmer sidebar: a clear selected tab, sleeping tabs that fade, one text size, small buttons that wait until you hover, tidy margins, no link preview. |
 | [DFS Quiet](dfs-quiet) | Keyboard people | Hides the buttons a shortcut covers (back, forward, reload and more) and keeps the URL bar row closed: ⌘T and ⌘L open it over the page. |
 | [DFS Nav Panel](dfs-nav-panel) | Ctrl Tab users | Your recent tabs as big previews on one dark card, centred on the page. |
-| [DFS Minimal Menus](dfs-minimal-menus) | Anyone who wants less | Right-click menus with only what you can't do another way: Move to Folder, Change Label, Change Icon, Close Tab. Arrives switched off; on a Mac it also needs `widget.macos.native-context-menus` set to false. |
+| [DFS Minimal Menus](dfs-minimal-menus) | Anyone who wants less | Right-click menus with only what you can't do another way: Move to Folder, Change Name, Change Icon; a shorter space menu; New Folder on top when you right-click the sidebar. Arrives switched off; on a Mac it also needs two about:config switches (see its readme). |
 
 Start with DFS Calm. Add DFS Quiet once you know your shortcuts.
 

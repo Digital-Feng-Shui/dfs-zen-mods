@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "property": "mod.dfs-menus.close-tab",
+    "label": "Close Tab in the tab menu",
+    "type": "checkbox",
+    "defaultValue": false
+  },
+  {
+    "property": "mod.dfs-menus.new-tab",
+    "label": "New Tab in the sidebar menu",
+    "type": "checkbox",
+    "defaultValue": false
+  }
+]
