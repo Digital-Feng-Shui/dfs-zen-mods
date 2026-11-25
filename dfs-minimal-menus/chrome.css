@@ -75,8 +75,9 @@
 }
 #toolbar-context-menu > #zen-context-menu-new-folder-toolbar { order: -3; }
 #toolbar-context-menu > #zen-panel-ui-live-folder-create { order: -2; }
-/* the line under the compact-mode item would now open the menu: it goes, and Theme gets the line instead */
-#toolbar-context-menu > #zen-context-menu-compact-mode + menuseparator { display: none !important; }
+/* Lines: only the one above Theme stays. The others now sit between hidden items or at the bottom (two loose lines
+   under Set Profile, Rim 25 Nov). */
+#toolbar-context-menu > menuseparator:not(#zen-panel-ui-live-folder-create + menuseparator) { display: none !important; }
 @media (-moz-pref("mod.dfs-menus.new-tab")) {
   #toolbar-context-menu > #toolbar-context-openANewTab:not([hidden]) { display: flex !important; order: -4; }
 }
