@@ -86,7 +86,7 @@ def main():
     profile = Path(sys.argv[1]).expanduser()
     if not (profile / "prefs.js").exists(): sys.exit(f"Not a Zen profile: {profile}")
     if "--now" not in sys.argv:
-        print("Waiting for Zen to close (Cmd Q in Zen); a notification says when to open it again…", flush=True)
+        print("Waiting for Zen to close (Cmd Q in Zen); a small window says when to open it again…", flush=True)
         while zen_running_with(profile): time.sleep(1)
         time.sleep(2)  # Zen writes its files on the way out
     add = [sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--add"]  # --add dfs-minimal-menus
@@ -98,9 +98,9 @@ def main():
         text = re.sub(r'user_pref\("widget\.macos\.native-context-menus", (true|false)\);', line, text) if "native-context-menus" in text else text.rstrip("\n") + "\n" + line + "\n"
         prefs.write_text(text); done.append("Zen draws its own menus")
     if zen_running_with(profile):  # Zen was opened again while we wrote (25 Nov: reopened in the same second)
-        subprocess.run(["osascript", "-e", 'display notification "Zen opened too early. Quit Zen once more; the update runs again." with title "Zen mods"'])
+        subprocess.run(["osascript", "-e", 'display dialog "Zen opened too early. Quit Zen once more and run the update again." with title "Zen mods" buttons {"OK"} default button 1 giving up after 120'])
         sys.exit("Zen started while the update was being written: quit Zen again and rerun.")
-    subprocess.run(["osascript", "-e", 'display notification "Done. Open Zen again." with title "Zen mods updated"'])
+    subprocess.run(["osascript", "-e", 'display dialog "Zen mods updated. You can open Zen again." with title "Zen mods" buttons {"OK"} default button 1 giving up after 120'])
     print("Updated: " + ", ".join(done) + ". Open Zen again: the new versions load as it starts.", flush=True)
 
 
