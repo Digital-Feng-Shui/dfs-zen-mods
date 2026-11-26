@@ -81,7 +81,7 @@ class M:
     def __init__(self, port=PORT, timeout=60):
         self.s = socket.create_connection(("127.0.0.1", port), timeout=timeout); self.i = 0; self._recv()
         self.cmd("WebDriver:NewSession", {"capabilities": {}}); self.cmd("Marionette:SetContext", {"value": "chrome"})
-        self.cmd("WebDriver:SetTimeouts", {"script": 60000})
+        self.cmd("WebDriver:SetTimeouts", {"script": 600000})  # the deep check runs several minutes
     def _recv(self):
         buf = b""
         while b":" not in buf: buf += self.s.recv(1)
@@ -119,7 +119,7 @@ def wait_for_marionette(seconds=40):
     end = time.time() + seconds
     while time.time() < end:
         try:
-            m = M(timeout=5); m.s.settimeout(180); return m  # short wait to connect, long wait for scripts
+            m = M(timeout=5); m.s.settimeout(660); return m  # short wait to connect, long wait for scripts
         except OSError: time.sleep(0.5)
     sys.exit("The demo Zen did not open Marionette on port %d." % PORT)
 
@@ -185,7 +185,7 @@ def serve(m):
 
 
 def relay(script, quit=False):
-    c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); c.settimeout(180); c.connect(str(RELAY))
+    c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); c.settimeout(660); c.connect(str(RELAY))
     c.sendall(json.dumps({"js": script, "quit": quit}).encode() + b"\n")
     data = b""
     while not data.endswith(b"\n"):

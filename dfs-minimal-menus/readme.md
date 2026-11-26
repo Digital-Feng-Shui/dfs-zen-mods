@@ -2,7 +2,7 @@
 
 Right-click menus with only what you can't do another way.
 
-- **Tab menu:** Move to Space (your other spaces), Move to Folder (New Folder inside it puts this tab in a new folder), Change Name, Change Icon, and Mute Tab with its shortcut (⌃M) beside it.
+- **Tab menu:** Move to Space (your other spaces), Move to Folder (New Folder inside it puts this tab in a new folder), Change Name, Change Icon, and Mute Tab with its shortcut (⌃M) beside it. Inside a split view, Split Out Tab shows too, so you can always get out.
 - **Space menu** (right-click a space or its ⋯ button): name, icon, theme, Manage Spaces, create, share, delete and routing. The list of spaces goes (swipe, or use the icons at the bottom) and so does unloading.
 - **Empty sidebar space:** New Folder and Theme.
 
@@ -21,4 +21,4 @@ macOS draws Zen's menus by default and no mod can change those. Open `about:conf
 
 Don't like it? Switch the mod off and Zen's full menus are back.
 
-By Digital Feng Shui. v1.4.0, 25 Nov 2026.
+By Digital Feng Shui. v1.4.1, 26 Nov 2026.

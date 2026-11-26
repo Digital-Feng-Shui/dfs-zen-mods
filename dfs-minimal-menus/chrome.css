@@ -13,9 +13,13 @@
    in full screen. */
 #tabContextMenu > :not(#context_moveTabOptions, #context_zenMoveToFolder, #context_zen-edit-tab-title,
                        #context_zen-edit-tab-icon, #context_toggleMuteTab, #context_toggleMuteSelectedTabs,
+                       #context_zenSplitTabs[data-l10n-args*='"tabCount":-1'],
                        #context_fullscreenAutohide, #context_fullscreenExit) {
   display: none !important;
 }
+/* In a split view the way out stays (1.4.1, Rim got stuck in an accidental split). Zen uses one item for both: "Add
+   Split View" normally (hidden here, it caused the accident) and "Split Out Tab" inside a split, marked with
+   tabCount -1 in its data-l10n-args. Only that second one shows, right under Move to Folder. */
 /* Mute Tab stays, last (1.4, Rim: "a hotkey I currently always forget and I don't assume people to know"); the menu
    shows its shortcut (Ctrl M) beside it, so it teaches the key. Zen swaps it for Mute Tabs when several are selected. */
 #tabContextMenu > :is(#context_toggleMuteTab, #context_toggleMuteSelectedTabs) {

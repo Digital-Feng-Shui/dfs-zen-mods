@@ -82,6 +82,9 @@ return (async () => {
     "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
     "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true, "mod.dfs-menus.close-tab": false, "mod.dfs-menus.new-tab": false, "mod.dfs-menus.live-folder": false, "mod.dfs-menus.profile": false };
   await resetAll();
+  // Nav Panel centres its card on the screen, so the window must fill it (a demo window sometimes opens shorter).
+  window.moveTo(screen.availLeft, screen.availTop); window.resizeTo(screen.availWidth, screen.availHeight); await wait(800); tick();
+  R.window = [screenX, screenY, outerWidth, outerHeight];
 
   // 1. Each mod's CSS parsed on its own: parse errors, and rules whose selector matches nothing right now.
   const sources = ARGS_SOURCES;
