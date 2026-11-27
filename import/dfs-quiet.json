@@ -8,13 +8,13 @@
     "readme": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/readme.md",
     "preferences": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/preferences.json",
     "author": "Digital Feng Shui",
-    "version": "0.17.0",
+    "version": "0.18.0",
     "image": "https://raw.githubusercontent.com/Digital-Feng-Shui/dfs-zen-mods/main/dfs-quiet/image.png",
     "tags": [
       "quiet",
       "keyboard"
     ],
     "createdAt": "2026-10-31",
-    "updatedAt": "2026-11-02"
+    "updatedAt": "2026-11-27"
   }
 }

@@ -79,12 +79,16 @@ return (async () => {
   const resetAll = async () => { for (const [p, v] of Object.entries(DEFAULTS)) typeof v === "boolean" ? prefs.setBoolPref(p, v) : prefs.setStringPref(p, v); tick(); await wait(600); tick(); };
   const DEFAULTS = { "mod.dfs-calm.selected-tab": "edge", "mod.dfs-calm.ghost-tabs": "grey", "mod.dfs-calm.tab-text": "12",
     "mod.dfs-calm.space-heading": true, "mod.dfs-calm.faint-buttons": true, "mod.dfs-calm.hide-link-preview": true,
-    "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-urlbar": true,
+    "mod.dfs-calm.tidy-rows": true, "mod.dfs-quiet.hide-buttons": true, "mod.dfs-quiet.hide-newtab": false, "mod.dfs-quiet.hide-urlbar": true,
     "mod.dfs-nav.grid": "9", "mod.dfs-nav.close-hint": true, "mod.dfs-menus.close-tab": false, "mod.dfs-menus.new-tab": false, "mod.dfs-menus.live-folder": false, "mod.dfs-menus.profile": false };
   await resetAll();
   // Nav Panel centres its card on the screen, so the window must fill it (a demo window sometimes opens shorter).
-  window.moveTo(screen.availLeft, screen.availTop); window.resizeTo(screen.availWidth, screen.availHeight); await wait(800); tick();
+  for (let i = 0; i < 6 && (screenX !== screen.availLeft || screenY !== screen.availTop || outerHeight !== screen.availHeight); i++) {
+    window.resizeTo(screen.availWidth, screen.availHeight); window.moveTo(screen.availLeft, screen.availTop); await wait(500); tick();
+  }
   R.window = [screenX, screenY, outerWidth, outerHeight];
+  const windowFits = screenX === screen.availLeft && screenY === screen.availTop && outerHeight === screen.availHeight;
+  if (!windowFits) ok("Check setup: demo window doesn't fill the screen", null, `window at ${R.window}; Nav Panel centres on the screen, so its centring checks are notes this run`);
 
   // 1. Each mod's CSS parsed on its own: parse errors, and rules whose selector matches nothing right now.
   const sources = ARGS_SOURCES;
@@ -214,6 +218,9 @@ return (async () => {
   gURLBar.handleRevert(); gURLBar.view.close(); gURLBar.blur(); await wait(600);
   await setPref("mod.dfs-quiet.hide-urlbar", false);
   ok("Quiet setting: URL bar off gives the row back", navbar() > 0, navbar());
+  const newTabRow = () => $("#tabs-newtab-button") ? cs($("#tabs-newtab-button")).display : "missing";
+  const ntDefault = newTabRow(); await setPref("mod.dfs-quiet.hide-newtab", true); const ntOn = newTabRow(); await setPref("mod.dfs-quiet.hide-newtab", false);
+  ok("Quiet setting: Hide + New Tab (off by default)", ntDefault !== "none" && ntOn === "none", `default ${ntDefault}, switched on ${ntOn}`);
   await setPref("mod.dfs-quiet.hide-buttons", false);
   ok("Quiet setting: buttons back", $("#back-button") ? cs($("#back-button")).display !== "none" : null, $("#back-button") ? cs($("#back-button")).display : "-");
   await resetAll();
@@ -235,19 +242,19 @@ return (async () => {
   R.nav = { grid9: m9 };
   ok("Nav: panel opens", ["open", "showing"].includes(panel.state), panel.state + (panel.state === "showing" ? " (still opening: the hidden demo window holds popups back)" : ""));
   ok("Nav: 3 x 3, nine cards", m9.n === 9 && m9.cols === 3, `${m9.n} cards, ${m9.cols} columns`);
-  ok("Nav: card centred on the page (within 3px)", Math.abs(m9.dx) <= 3 && Math.abs(m9.dy) <= 3, `off by ${m9.dx}, ${m9.dy}`);
+  ok("Nav: card centred on the page (within 3px)", windowFits ? Math.abs(m9.dx) <= 3 && Math.abs(m9.dy) <= 3 : null, `off by ${m9.dx}, ${m9.dy}`);
   ok("Nav: card fully on screen", m9.inside, JSON.stringify(m9.card));
   ok("Nav: short names", null, m9.names.join(" | "));
   for (const [g, n, cols] of [["12", 9, 4], ["6", 6, 3]]) {
     await setPref("mod.dfs-nav.grid", g); await openPanel(); const m = measure(); R.nav["grid" + g] = m;
-    ok(`Nav setting: Grid ${g}`, m.n === n && m.cols === cols && Math.abs(m.dx) <= 3 && Math.abs(m.dy) <= 3, `${m.n} cards, ${m.cols} columns, off by ${m.dx}, ${m.dy} (maxPreviews ${prefs.getIntPref("browser.ctrlTab.maxPreviews")})`);
+    ok(`Nav setting: Grid ${g}`, m.n === n && m.cols === cols && (!windowFits || (Math.abs(m.dx) <= 3 && Math.abs(m.dy) <= 3)), `${m.n} cards, ${m.cols} columns, off by ${m.dx}, ${m.dy} (maxPreviews ${prefs.getIntPref("browser.ctrlTab.maxPreviews")})`);
   }
   await setPref("mod.dfs-nav.grid", "9");
   // few tabs: the card must still centre (the 0.10.3 fix)
   const hidden = gBrowser.tabs.filter(t => !t.pinned && !t.selected && !t.hasAttribute("pending")).slice(2);
   for (const t of hidden) gBrowser.discardBrowser(t);
   await openPanel(); const mFew = measure(); R.nav.few = mFew;
-  ok("Nav: few tabs, still centred", Math.abs(mFew.dx) <= 3 && Math.abs(mFew.dy) <= 3, `${mFew.n} cards, off by ${mFew.dx}, ${mFew.dy}`);
+  ok("Nav: few tabs, still centred", windowFits ? Math.abs(mFew.dx) <= 3 && Math.abs(mFew.dy) <= 3 : null, `${mFew.n} cards, off by ${mFew.dx}, ${mFew.dy}`);
   ctrlTab.close(); await wait(300);
   for (const t of hidden) { gBrowser.selectedTab = t; await wait(250); }
   gBrowser.selectedTab = gBrowser.tabs.find(t => t.label.startsWith("Japanese")) || gBrowser.selectedTab;

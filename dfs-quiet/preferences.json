@@ -10,5 +10,11 @@
     "label": "Hide the URL bar (Cmd L opens it)",
     "type": "checkbox",
     "defaultValue": true
+  },
+  {
+    "property": "mod.dfs-quiet.hide-newtab",
+    "label": "Hide + New Tab in the sidebar (Cmd T opens one)",
+    "type": "checkbox",
+    "defaultValue": false
   }
 ]

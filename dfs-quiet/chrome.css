@@ -34,3 +34,11 @@
     overflow: hidden !important;
   }
 }
+
+/* The + New Tab row under the tabs (0.18, Rim 27 Nov: "I'm pressing Command T ... eliminating even a little bit more
+   clutter"). A switch of its own, off by default: Cmd T and the + at the bottom of the sidebar still open a tab. */
+@media (-moz-pref("mod.dfs-quiet.hide-newtab")) {
+  #tabs-newtab-button {
+    display: none !important;
+  }
+}
